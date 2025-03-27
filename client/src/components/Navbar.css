@@ -1,0 +1,33 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #408fae;
+  padding: 0.5rem 1rem;
+}
+
+.nav-menu {
+  list-style: none;
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu li a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+}
+
+.nav-menu li.active a {
+  color: #408fae;
+  background-color: #fff;
+}
+
+.login-link {
+  color: #799ecf;
+  text-decoration: none;
+  font-size: lrem;
+}

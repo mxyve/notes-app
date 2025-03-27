@@ -24,8 +24,8 @@ export const createNote = async (req, res) => {
 // 获取笔记列表
 export const getNotes = async (req, res) => {
   try {
-    const { userId } = reg.params;
-    const [rows] = await pool.query("SELECT * FROM notes WHERE user id = ?", [
+    const { userId } = req.params;
+    const [rows] = await pool.query("SELECT * FROM notes WHERE user_id = ?", [
       userId,
     ]);
     res.status(200).json(rows);

@@ -1,10 +1,12 @@
 import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import AppRoutes from '@/routes';
 
 const App = () => {
   return (
-    <div>
-      <h2>我的笔记应用</h2>
-    </div>
+    <Router>
+      <AppRoutes />
+    </Router>
   );
 };
 
