@@ -28,3 +28,11 @@ export const updateNote = async (noteId, noteData) => {
 export const deleteNote = async (noteId) => {
   return axiosInstance.delete(`/notes/${noteId}`);
 };
+
+// 查询笔记
+export const searchNotes = async (userId, query) => {
+  // 拼接包含 userId 的路径
+  const url = `/notes/search/${userId}`;
+  // 发送 GET 请求，将 query 作为查询参数
+  return axiosInstance.get(url, { params: { keyword: query } });
+};

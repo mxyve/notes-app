@@ -88,3 +88,26 @@ export const deleteNote = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// 模糊查询笔记
+export const searchNotes = async (req, res) => {
+  try {
+    // 从路径参数获取 userId
+    const userId = req.params.userId;
+    // 从查询参数获取 keyword
+    const { keyword } = req.query;
+
+    // 检查 userId 和 keyword 是否存在
+    if (!userId || !keyword) {
+      return res.status(400).json({ error: "userId and keyword are required" });
+    }
+
+    const [rows] = await pool.query(
+      "SELECT * FROM notes WHERE user_id = ? AND (title LIKE ? OR content LIKE ?)",
+      [userId, `%${keyword}%`, `%${keyword}%`]
+    );
+    res.status(200).json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

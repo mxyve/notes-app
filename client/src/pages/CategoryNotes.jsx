@@ -18,9 +18,6 @@ const CategoryNotes = () => {
   useEffect(() => {
     const fetchNotesByCategory = async () => {
       try {
-        console.log('Checking user.id:', user && user.id);
-        console.log('Checking categoryId:', categoryId);
-        console.log('Userid ,categoryid-=-=-=-', user.id, categoryId);
         const fetchedNotes = await getNotesByCategory(user.id, categoryId);
         console.log('Fetched fetchedNotes:', fetchedNotes.data);
         setNotes(fetchedNotes.data);

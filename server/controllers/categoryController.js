@@ -3,6 +3,7 @@ import pool from "../config/db.js";
 // 创建分类
 export const createCategory = async (req, res) => {
   try {
+    // 从请求体中提取name字段
     const { name } = req.body;
     const [result] = await pool.query(
       "INSERT INTO categories (name) VALUES (?)",
@@ -27,6 +28,7 @@ export const getCategories = async (req, res) => {
 // 获取单个分类
 export const getCategory = async (req, res) => {
   try {
+    // 从请求参数中提取id字段
     const { id } = req.params;
     const [rows] = await pool.query("SELECT * FROM categories WHERE id = ?", [
       id,

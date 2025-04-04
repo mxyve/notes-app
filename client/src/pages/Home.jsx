@@ -1,7 +1,8 @@
 import { Layout, Typography } from 'antd';
 import Navbar from '@/components/Navbar';
 import { useStore } from '@/store/userStore';
-
+import Sousuo from '@/components/Search';
+// Layout 用于构建页面的整体布局，Typography 用于处理文本排版。
 const { Content } = Layout;
 const { Title } = Typography;
 
@@ -19,6 +20,7 @@ const Home = () => {
         )}
         <p>这是主页。</p>
       </Content>
+      <Sousuo />
     </Layout>
   );
 };

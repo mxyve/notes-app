@@ -1,4 +1,4 @@
-import { Form, Input, Button, Typography } from 'antd';
+import { Form, Input, Button, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { loginUser } from '@/api/userApi';
 import { useStore } from '@/store/userStore';
@@ -12,9 +12,10 @@ const Login = () => {
 
   const onSubmit = async (values) => {
     try {
+      // 定义表单提交的回调函数
       const response = await loginUser(values);
       setUser(response.data);
-      alert('登录成功');
+      message.success('登录成功');
       navigate('/');
     } catch (error) {
       console.error('Login failed:', error);

@@ -3,6 +3,7 @@ import pool from "../config/db.js";
 // 注册用户
 export const registerUser = async (req, res) => {
   try {
+    // 通过 req.body 获取客户端发送的请求体数据
     const { username, email, password, nickname, avatar_url } = req.body;
     const [result] = await pool.query(
       "INSERT INTO users (username, email, password)VALUES ( ?, ?, ?)",

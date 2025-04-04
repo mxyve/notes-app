@@ -1,0 +1,45 @@
+.search-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-space {
+  width: 100%;
+}
+
+.search-input {
+  margin-bottom: 20px;
+}
+
+.search-result-list {
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  padding: 10px;
+  max-height: 300px; /* 设置最大高度 */
+  overflow-y: auto; /* 内容过多时显示垂直滚动条 */
+}
+
+.search-result-item {
+  border-bottom: 1px solid #e8e8e8;
+  padding: 10px 0;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.note-info {
+  padding: 10px;
+}
+
+.note-title {
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.note-content {
+  font-size: 14px;
+  color: #666;
+}

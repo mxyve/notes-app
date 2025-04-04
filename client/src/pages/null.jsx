@@ -18,7 +18,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation(); // 使用 useLocation 钩子获取当前路由位置
 
-  // 浏览器默认
   // const handleLogout = () => {
   //   if (window.confirm('确定退出?')) {
   //     logout();
@@ -26,7 +25,6 @@ const Navbar = () => {
   //   }
   // };
 
-  // Modal 组件
   const handleLogout = () => {
     Modal.confirm({
       title: '确认退出',
@@ -52,7 +50,7 @@ const Navbar = () => {
       default:
         return [];
     }
-  }, [location.pathname]);
+  });
 
   return (
     <Header
@@ -65,7 +63,6 @@ const Navbar = () => {
       <Menu
         theme="dark"
         mode="horizontal"
-        // mode="vertical" // 修改为垂直模式
         selectedKeys={selectedKeys}
         className="w-200"
         items={[
@@ -125,3 +122,79 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+// import React, { useState } from 'react';
+
+// import {
+//   AppstoreOutlined,
+//   ContainerOutlined,
+//   DesktopOutlined,
+//   MailOutlined,
+//   MenuFoldOutlined,
+//   MenuUnfoldOutlined,
+//   PieChartOutlined,
+// } from '@ant-design/icons';
+// import { Button, Menu } from 'antd';
+
+// import { useNavigate } from 'react-router-dom';
+
+// const items = [
+//   { key: '1', icon: <PieChartOutlined />, label: '知识库' },
+//   { key: '2', icon: <DesktopOutlined />, label: 'AI' },
+//   { key: '3', icon: <ContainerOutlined />, label: '生活简谱' },
+//   {
+//     key: 'sub1',
+//     label: '待办箱',
+//     icon: <MailOutlined />,
+//     children: [
+//       { key: '5', label: 'Option 5' },
+//       { key: '6', label: 'Option 6' },
+//       { key: '7', label: 'Option 7' },
+//       { key: '8', label: 'Option 8' },
+//     ],
+//   },
+//   {
+//     key: 'sub2',
+//     label: '小记',
+//     icon: <AppstoreOutlined />,
+//     children: [
+//       { key: '9', label: 'Option 9' },
+//       { key: '10', label: 'Option 10' },
+//       {
+//         key: 'sub3',
+//         label: 'Submenu',
+//         children: [
+//           { key: '11', label: 'Option 11' },
+//           { key: '12', label: 'Option 12' },
+//         ],
+//       },
+//     ],
+//   },
+// ];
+
+// const Navbar = () => {
+//   const [collapsed, setCollapsed] = useState(false);
+//   const toggleCollapsed = () => {
+//     setCollapsed(!collapsed);
+//   };
+//   return (
+//     <div style={{ width: 256 }}>
+//       <Button
+//         type="primary"
+//         onClick={toggleCollapsed}
+//         style={{ marginBottom: 16 }}
+//       >
+//         {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+//       </Button>
+//       <Menu
+//         defaultSelectedKeys={['1']}
+//         defaultOpenKeys={['sub1']}
+//         mode="inline"
+//         theme="light"
+//         inlineCollapsed={collapsed}
+//         items={items}
+//       />
+//     </div>
+//   );
+// };
+// export default Navbar;
