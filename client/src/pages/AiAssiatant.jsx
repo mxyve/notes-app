@@ -15,15 +15,10 @@ const Home = () => {
           margin: '24px 16px',
           padding: 24,
           minHeight: 280,
-          backgroundColor: 'white',
+          backgroundColor: 'pink',
         }}
       >
-        {user ? (
-          <Title level={2}>欢迎， {user.nickname || user.username}</Title>
-        ) : (
-          <Title level={2}>欢迎来到笔记应用</Title>
-        )}
-        <p>这是主页。</p>
+        <p>AI智能</p>
       </Content>
     </Layout>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Descriptions, Tag } from 'antd';
+import { Card, Descriptions, Tag, Layout } from 'antd';
 import { getNote } from '@/api/noteApi';
 import { useStore } from '@/store/userStore';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,6 +10,7 @@ const Note = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [note, setNote] = useState(null);
+  const { Content } = Layout;
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -34,19 +35,21 @@ const Note = () => {
   if (!note) return <div>Loading...</div>;
 
   return (
-    <>
+    <Layout>
       <Navbar />
-      <Card className="note-card" hoverable>
-        <Card.Meta title={note.title} description={note.content} />
-        <div className="my-4">
-          {note.tags.map((tag) => (
-            <Tag color="cyan" key={tag}>
-              {tag}
-            </Tag>
-          ))}
-        </div>
-      </Card>
-    </>
+      <Content>
+        <Card className="note-card" hoverable>
+          <Card.Meta title={note.title} description={note.content} />
+          <div className="my-4">
+            {note.tags.map((tag) => (
+              <Tag color="cyan" key={tag}>
+                {tag}
+              </Tag>
+            ))}
+          </div>
+        </Card>
+      </Content>
+    </Layout>
   );
 };
 export default Note;

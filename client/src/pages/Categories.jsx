@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { List, Card } from 'antd';
+import { List, Card, Layout } from 'antd';
 import { getCategories } from '@/api/categoryApi';
 import { useStore } from '@/store/userstore';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +8,7 @@ import Navbar from '@/components/Navbar';
 const Categories = () => {
   const navigate = useNavigate();
   const { user } = useStore();
-
+  const { Content } = Layout;
   // 目前所有需要登录的页面，就是使用 useEffect 副作用 Hook，
   // 是否有 user 信息，来跳转到 login 页面，只执行一次。
   // 不加这个的页面就不需要登录，比如 Home 页面。
@@ -36,25 +36,24 @@ const Categories = () => {
   }, []);
 
   return (
-    <>
+    <Layout>
       <Navbar />
-      <div>
-        <h1>分类列表</h1>
-        <List
-          grid={{ gutter: 16, column: 4 }}
-          dataSource={categories}
-          renderItem={(item) => (
-            <Card hoverable className="m-2">
-              <Card.Meta title={item.name} />
-              {/* 修改 href 属性，包含 userId */}
-              <a href={`/notes/categories/${user.id}/${item.id}`}>
-                查看分类笔记
-              </a>
-            </Card>
-          )}
-        />
-      </div>
-    </>
+      <Content>
+        <div>
+          <h1>分类列表</h1>
+          <List
+            grid={{ gutter: 16, column: 4 }}
+            dataSource={categories}
+            renderItem={(item) => (
+              <Card hoverable className="m-2">
+                <Card.Meta title={item.name} />
+                <a href={`/notes/categories/${item.id}`}>查看分类笔记</a>
+              </Card>
+            )}
+          />
+        </div>
+      </Content>
+    </Layout>
   );
 };
 export default Categories;

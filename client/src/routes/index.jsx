@@ -9,6 +9,8 @@ import Notes from '@/pages/Notes';
 import Note from '@/pages/Note';
 import CreateNote from '@/pages/CreateNote';
 import EditNote from '@/pages/EditNote';
+import Search from '@/pages/Search';
+import AiAssistant from '@/pages/AiAssiatant';
 
 const AppRoutes = () => {
   return (
@@ -22,6 +24,8 @@ const AppRoutes = () => {
       <Route path="/notes/:id" element={<Note />} />
       <Route path="/create-note" element={<CreateNote />} />
       <Route path="/notes/edit/:noteId" element={<EditNote />} />
+      <Route path="/search" element={<Search />} />
+      <Route path="/ai" element={<AiAssistant />} />
     </Routes>
   );
 };

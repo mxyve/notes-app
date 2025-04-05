@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Tag, message, Select } from 'antd';
+import { Form, Input, Button, Tag, message, Select, Layout } from 'antd';
 import { updateNote, getNote } from '@/api/noteApi'; // 引入更新笔记和获取笔记的 API
 import { getCategories } from '@/api/categoryApi'; //引入获取分类的 API
 import { useStore } from '@/store/userStore';
@@ -17,6 +17,7 @@ const EditNote = () => {
   const [form] = Form.useForm();
   const [initialValues, setInitialValues] = useState({});
   //   const [noteData, setNoteData] = useState(null);
+  const { Content } = Layout;
 
   // 使用 useEffect 钩子在组件加载时获取分类数据
   useEffect(() => {
@@ -104,17 +105,18 @@ const EditNote = () => {
 
   // 渲染表单组件
   return (
-    <>
+    <Layout>
       <Navbar />
-      <div className="p-4">
-        <h1>编辑笔记</h1>
-        <NoteForm
-          form={form} // 绑定表单实例
-          initialValues={initialValues} // 传递表单初始值
-          onSubmit={handleSubmit} // 传递表单提交的回调函数
-          submitButtonText="更新笔记" // 设置提交按钮的⽂本
-        />
-        {/* <Form
+      <Content>
+        <div className="p-4">
+          <h1>编辑笔记</h1>
+          <NoteForm
+            form={form} // 绑定表单实例
+            initialValues={initialValues} // 传递表单初始值
+            onSubmit={handleSubmit} // 传递表单提交的回调函数
+            submitButtonText="更新笔记" // 设置提交按钮的⽂本
+          />
+          {/* <Form
           form={form}
           onFinish={handleSubmit}
           layout="vertical"
@@ -178,8 +180,9 @@ const EditNote = () => {
             </Button>
           </Form.Item>
         </Form> */}
-      </div>
-    </>
+        </div>
+      </Content>
+    </Layout>
   );
 };
 

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Input, Space, List } from 'antd';
+import { Input, Space, List, Layout } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { searchNotes, getNotes } from '@/api/noteApi';
 import { useStore } from '@/store/userStore';
 import './Sousuo.css';
+import Navbar from '@/components/Navbar';
 
 const { Search } = Input;
 
@@ -12,7 +13,7 @@ const Sousuo = () => {
   const { user } = useStore();
   const [notes, setNotes] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-
+  const { Content } = Layout;
   useEffect(() => {
     if (!user) navigate('/login');
   }, [navigate, user]);
@@ -54,34 +55,39 @@ const Sousuo = () => {
   };
 
   return (
-    <div className="search-container">
-      <Space direction="vertical" className="search-space">
-        <Search
-          placeholder="input search text"
-          allowClear
-          onSearch={onSearch}
-          style={{ width: 200 }}
-          enterButton
-          className="search-input"
-        />
-        {searchResults.length > 0 && (
-          <List
-            dataSource={searchResults}
-            renderItem={(item) => (
-              <List.Item className="search-result-item">
-                <div className="note-info">
-                  <h3 className="note-title">{item.title}</h3>
-                  <p className="note-content">
-                    {item.content.substring(0, 60) + '...'}
-                  </p>
-                </div>
-              </List.Item>
+    <Layout>
+      <Navbar />
+      <Content>
+        <div className="search-container">
+          <Space direction="vertical" className="search-space">
+            <Search
+              placeholder="input search text"
+              allowClear
+              onSearch={onSearch}
+              style={{ width: 200 }}
+              enterButton
+              className="search-input"
+            />
+            {searchResults.length > 0 && (
+              <List
+                dataSource={searchResults}
+                renderItem={(item) => (
+                  <List.Item className="search-result-item">
+                    <div className="note-info">
+                      <h3 className="note-title">{item.title}</h3>
+                      <p className="note-content">
+                        {item.content.substring(0, 60) + '...'}
+                      </p>
+                    </div>
+                  </List.Item>
+                )}
+                className="search-result-list"
+              />
             )}
-            className="search-result-list"
-          />
-        )}
-      </Space>
-    </div>
+          </Space>
+        </div>
+      </Content>
+    </Layout>
   );
 };
 

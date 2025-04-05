@@ -1,32 +1,53 @@
-// 使用 antd 组件 + unocss 编写的自定义导航栏组件
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Menu, Typography, Avatar, Space, Button, Modal } from 'antd';
+import React, { useState, useEffect } from 'react';
 import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
   UserOutlined,
+  BookOutlined,
+  FormOutlined,
+  DeleteOutlined,
+  CarryOutOutlined,
+  FileAddOutlined,
   HomeOutlined,
-  AppstoreOutlined,
-  FileOutlined,
+  RobotOutlined,
+  SearchOutlined,
+  PlusSquareOutlined,
 } from '@ant-design/icons';
+import {
+  Button,
+  Layout,
+  Menu,
+  theme,
+  Space,
+  Avatar,
+  Typography,
+  Modal,
+  Input,
+} from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/userstore';
-
-const { Header } = Layout;
-const { Text } = Typography;
+const { Sider } = Layout;
 
 const Navbar = () => {
-  const { user, logout } = useStore();
   const navigate = useNavigate();
-  const location = useLocation(); // 使用 useLocation 钩子获取当前路由位置
+  const { user, logout } = useStore();
 
-  // 浏览器默认
-  // const handleLogout = () => {
-  //   if (window.confirm('确定退出?')) {
-  //     logout();
-  //     navigate('/login');
-  //   }
-  // };
+  // 从 localStorage 中获取 collapsed 状态，如果没有则默认为 false
+  // collapsed为true时表示收缩，为false时表示展开
+  const [collapsed, setCollapsed] = useState(() => {
+    const storedCollapsed = localStorage.getItem('collapsed');
+    return storedCollapsed ? JSON.parse(storedCollapsed) : false;
+  });
+  // 每次 collapsed 状态改变时，更新 localStorage
+  useEffect(() => {
+    localStorage.setItem('collapsed', JSON.stringify(collapsed));
+  }, [collapsed]);
 
-  // Modal 组件
+  const { Text } = Typography;
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
   const handleLogout = () => {
     Modal.confirm({
       title: '确认退出',
@@ -40,9 +61,8 @@ const Navbar = () => {
     });
   };
 
-  // 根据当前路由设置选中的菜单项
   const selectedKeys = React.useMemo(() => {
-    switch (location.pathname) {
+    switch (window.location.pathname) {
       case '/':
         return ['home'];
       case '/categories':
@@ -52,67 +72,41 @@ const Navbar = () => {
       default:
         return [];
     }
-  }, [location.pathname]);
+  }, []);
 
   return (
-    <Header
+    <Sider
+      trigger={null}
+      collapsible
+      collapsed={collapsed}
+      collapsedWidth={60} // 收缩时的宽度
+      width={200} // 展开时的宽度
       style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        height: '100vh',
+        backgroundColor: 'white',
       }}
     >
-      <Menu
-        theme="dark"
-        mode="horizontal"
-        // mode="vertical" // 修改为垂直模式
-        selectedKeys={selectedKeys}
-        className="w-200"
-        items={[
-          {
-            key: 'home',
-            label: (
-              <Space size="middle">
-                <HomeOutlined />
-                <span>首页</span>
-              </Space>
-            ),
-            onClick: () => navigate('/'),
-          },
-          {
-            key: 'categories',
-            label: (
-              <Space size="middle">
-                <AppstoreOutlined />
-                <span>分类</span>
-              </Space>
-            ),
-            onClick: () => navigate('/categories'),
-          },
-          {
-            key: 'notes',
-            label: (
-              <Space size="middle">
-                <FileOutlined />
-                <span>笔记</span>
-              </Space>
-            ),
-            onClick: () => navigate('/notes'),
-          },
-        ]}
-      />
-
       <div>
         {user ? (
-          <Space onClick={handleLogout}>
+          <Space onClick={handleLogout} style={{ margin: '15px' }}>
             {user.avatar_url ? (
               <Avatar src={user.avatar_url} />
             ) : (
               <Avatar icon={<UserOutlined />} />
             )}
-            <Text className="ml-2 text-white">
-              {user.nickname || user.username}
-            </Text>
+            {!collapsed && (
+              <Text
+                className="ml-2 text-black"
+                style={{
+                  whiteSpace: 'nowrap',
+                  flex: 1, // 让文本元素尽可能占据剩余空间
+                  overflow: 'hidden', // 隐藏超出容器的部分
+                  textOverflow: 'ellipsis', // 超出部分显示省略号
+                }}
+              >
+                欢迎 {user.nickname || user.username} !
+              </Text>
+            )}
           </Space>
         ) : (
           <Button type="primary" onClick={() => navigate('/login')}>
@@ -120,7 +114,146 @@ const Navbar = () => {
           </Button>
         )}
       </div>
-    </Header>
+
+      {/* 导航栏收缩时 */}
+      {collapsed && (
+        <Space
+          direction="vertical" // 设置子元素垂直排列
+          style={{
+            marginTop: '10px',
+            paddingLeft: '20px',
+            width: '100%',
+          }}
+          size="middle"
+        >
+          <PlusSquareOutlined style={{ fontSize: '20px' }} />
+          <SearchOutlined
+            onClick={() => navigate('/search')}
+            style={{ fontSize: '20px' }}
+          />
+        </Space>
+      )}
+
+      {/* 导航栏展开时 */}
+      {!collapsed && (
+        <Space
+          direction="horizontal" // 设置子元素水平排列
+          style={{
+            paddingLeft: '18px',
+            margin: '10px 0px',
+          }}
+        >
+          <Input
+            placeholder="搜索"
+            onClick={() => navigate('/search')}
+            prefix={<SearchOutlined />}
+          />
+          <PlusSquareOutlined
+            style={{
+              marginRight: '10px',
+              fontSize: '22px',
+            }}
+          />
+        </Space>
+      )}
+
+      <Menu
+        theme="light"
+        mode="inline"
+        inlineCollapsed={collapsed}
+        selectedKeys={selectedKeys}
+        items={[
+          {
+            key: 'home',
+            icon: <HomeOutlined />,
+            label: (
+              <Space>
+                {/* <HomeOutlined /> */}
+                <span>开始</span>
+              </Space>
+            ),
+            onClick: () => navigate('/'),
+          },
+          {
+            key: 'AI',
+            icon: <RobotOutlined />,
+            label: (
+              <Space>
+                {/* <RobotOutlined /> */}
+                <span>AI助手</span>
+              </Space>
+            ),
+            onClick: () => navigate('/ai'),
+          },
+          {
+            key: 'categories',
+            icon: <BookOutlined />,
+            label: (
+              <Space>
+                {/* <VideoCameraOutlined /> */}
+                <span>知识库</span>
+              </Space>
+            ),
+            onClick: () => navigate('/categories'),
+          },
+          {
+            key: 'notes',
+            icon: <FileAddOutlined />,
+            label: (
+              <Space>
+                {/* <FileAddOutlined /> */}
+                <span>笔记</span>
+              </Space>
+            ),
+            onClick: () => navigate('/notes'),
+          },
+
+          {
+            key: '4',
+            icon: <CarryOutOutlined />,
+            label: (
+              <Space>
+                {/* <CarryOutOutlined /> */}
+                <span>待办箱</span>
+              </Space>
+            ),
+          },
+          {
+            key: '5',
+            icon: <FormOutlined />,
+            label: (
+              <Space>
+                {/* <FormOutlined /> */}
+                <span>小记</span>
+              </Space>
+            ),
+          },
+          {
+            key: '6',
+            icon: <DeleteOutlined />,
+            label: (
+              <Space>
+                {/* <DeleteOutlined /> */}
+                <span>回收站</span>
+              </Space>
+            ),
+          },
+        ]}
+      />
+      <Button
+        type="text"
+        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        onClick={() => setCollapsed(!collapsed)}
+        style={{
+          fontSize: '16px',
+          width: 64,
+          height: 64,
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+        }}
+      />
+    </Sider>
   );
 };
 

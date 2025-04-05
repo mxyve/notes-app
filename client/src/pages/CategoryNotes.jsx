@@ -10,6 +10,7 @@ const CategoryNotes = () => {
   const navigate = useNavigate();
   const { categoryId } = useParams();
   const [notes, setNotes] = useState([]);
+  const { Content } = Layout;
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -32,32 +33,34 @@ const CategoryNotes = () => {
   if (!notes) return <div>Loading...</div>;
 
   return (
-    <>
+    <Layout>
       <Navbar />
-      <h1>分类笔记列表</h1>
-      <List
-        grid={{ gutter: 16, column: 4 }}
-        dataSource={notes}
-        renderItem={(item) => (
-          <Card className="bg-blue-100 m-2">
-            <Card.Meta
-              title={item.title}
-              description={item.content.substring(0, 60) + '...'}
-            />
-            {item.tags && item.tags.length > 0 && (
-              <div className="tags-container">
-                {item.tags.map((tag) => (
-                  <Tag color="cyan" key={tag}>
-                    {tag}
-                  </Tag>
-                ))}
-              </div>
-            )}
-            <a href={`/notes/${item.id}`}>查看详情</a>
-          </Card>
-        )}
-      />
-    </>
+      <Content>
+        <h1>分类笔记列表</h1>
+        <List
+          grid={{ gutter: 16, column: 4 }}
+          dataSource={notes}
+          renderItem={(item) => (
+            <Card className="bg-blue-100 m-2">
+              <Card.Meta
+                title={item.title}
+                description={item.content.substring(0, 60) + '...'}
+              />
+              {item.tags && item.tags.length > 0 && (
+                <div className="tags-container">
+                  {item.tags.map((tag) => (
+                    <Tag color="cyan" key={tag}>
+                      {tag}
+                    </Tag>
+                  ))}
+                </div>
+              )}
+              <a href={`/notes/${item.id}`}>查看详情</a>
+            </Card>
+          )}
+        />
+      </Content>
+    </Layout>
   );
 };
 
