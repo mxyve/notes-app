@@ -4,6 +4,7 @@ export const createCategory = async (categoryData) => {
   return axiosInstance.post('/category', categoryData);
 };
 
+// 获取所有分类
 export const getCategories = async () => {
   return axiosInstance.get('/categories');
 };

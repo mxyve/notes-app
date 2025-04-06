@@ -15,7 +15,7 @@ const Home = () => {
           margin: '24px 16px',
           padding: 24,
           minHeight: 280,
-          backgroundColor: 'pink',
+          backgroundColor: 'white',
         }}
       >
         <p>AI智能</p>

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Descriptions, Tag, Layout } from 'antd';
+import { Tag, Layout } from 'antd';
 import { getNote } from '@/api/noteApi';
 import { useStore } from '@/store/userStore';
 import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import Markdown from 'markdown-to-jsx';
 
 const Note = () => {
   const { user } = useStore();
@@ -37,19 +38,36 @@ const Note = () => {
   return (
     <Layout>
       <Navbar />
-      <Content>
-        <Card className="note-card" hoverable>
-          <Card.Meta title={note.title} description={note.content} />
-          <div className="my-4">
-            {note.tags.map((tag) => (
-              <Tag color="cyan" key={tag}>
-                {tag}
-              </Tag>
-            ))}
-          </div>
-        </Card>
+      <Content className="p-8 flex-1 h-[100vh] overflow-y-auto">
+        <h1 className="text-3xl mb-4">{note.title}</h1>
+        {note.tags.map((tag) => (
+          <Tag color="cyan" key={tag}>
+            {tag}
+          </Tag>
+        ))}
+        <div className="mt-4 flex flex-wrap gap-2">
+          {/* 使用 markdown - to - jsx 进行解析 */}
+          <Markdown
+            options={{
+              overrides: {
+                img: {
+                  component: ({ src, alt }) => (
+                    <img
+                      src={src}
+                      alt={alt}
+                      style={{ maxWidth: '100%', height: 'auto' }}
+                    />
+                  ),
+                },
+              },
+            }}
+          >
+            {note.content}
+          </Markdown>
+        </div>
       </Content>
     </Layout>
   );
 };
+
 export default Note;

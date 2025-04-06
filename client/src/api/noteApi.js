@@ -10,6 +10,7 @@ export const getNotes = async (userId) => {
   return axiosInstance.get(`/notes/user/${userId}`);
 };
 
+// 获取单个笔记
 export const getNote = async (noteId) => {
   return axiosInstance.get(`/notes/${noteId}`);
 };

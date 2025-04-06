@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { List, Card, Tag } from 'antd';
+import { List, Card, Tag, Layout } from 'antd';
 import { getNotesByCategory } from '@/api/noteApi';
 import { useStore } from '@/store/userStore';
 import { useNavigate, useParams } from 'react-router-dom';

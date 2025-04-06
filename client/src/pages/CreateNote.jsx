@@ -1,145 +1,177 @@
 import React, { useState, useEffect } from 'react';
-// import { Form, Input, Button, Tag, message, Select } from 'antd';
-import { message } from 'antd';
-import { createNote } from '@/api/noteApi'; // 引入创建笔记的 API
-// import { getCategories } from '@/api/categoryApi'; // 引入获取分类的 API
-import { useStore } from '@/store/userStore'; // 引入全局管理状态
-import { useNavigate } from 'react-router-dom'; // 引入 React Router 的导航
+import { useStore } from '@/store/userStore';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
-import NoteForm from '@/components/NoteForm';
+import { createNote } from '@/api/noteApi'; // 创建笔记
+import { getCategories } from '@/api/categoryApi'; // 所有分类数据
+import { Layout, Typography, Input, Button, Select, Tag, message } from 'antd';
+import Markdown from 'markdown-to-jsx';
 
-// 创建笔记页面组件
 const CreateNote = () => {
-  const navigate = useNavigate(); // 获取导航函数
-  const { user } = useStore(); // 从全局状态中获取当前用户信息
-  //   const [tags, setTags] = useState([]); // 标签状态，用于存储用户添加的标签
-  //   const [inputTag, setInputTag] = useState(''); // 输入框中的标签内容
-  //   const [categories, setCategories] = useState([]); // 分类状态，用于存储从 API 获取的分类数据
+  const navigate = useNavigate();
+  const { user } = useStore();
+  const { Content } = Layout;
+  const { Title } = Typography;
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [categoryId, setCategoryId] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [inputTag, setInputTag] = useState('');
 
-  //   //使用 useEffect 钩子在组件加载时获取分类数据
-  //   useEffect(() => {
-  //     const fetchCategories = async () => {
-  //       try {
-  //         const response = await getCategories(); // 调用 API 获取分类
-  //         setCategories(response.data); // 将获取到的分类数据存储到状态中
-  //       } catch (error) {
-  //         console.error('Failed to fetch categories:', error);
-  //         message.error('获取分类失败');
-  //       }
-  //     };
-  //     fetchCategories();
-  //   }, []);
+  useEffect(() => {
+    if (!user) navigate('/login');
+  }, [navigate]);
 
-  // 提交表单时的处理函数
-  const handleSubmit = async (values) => {
-    console.log(values);
+  // 获取分类
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [categoriesResponse] = await Promise.all([getCategories()]);
+        setCategories(categoriesResponse.data);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        message.error('获取数据失败');
+      }
+    };
+    fetchData();
+  });
+
+  // 创建笔记
+  const handleSubmit = async () => {
     try {
-      const noteData = {
-        ...values, // 展开表单提交的值
-        tags, // 添加标签到笔记数据中
-        userId: user.id, // 添加当前用户的 ID
+      const newNoteData = {
+        title,
+        content,
+        categoryId,
+        tags,
+        userId: user.id,
       };
-      await createNote(noteData); // 调用 API 创建笔记
-      message.success('笔记创建成功'); // 显示成功提示
-      navigate('/notes'); // 导航到笔记列表页面
+      await createNote(newNoteData);
+      message.success('笔记创建成功');
+      navigate('/notes');
     } catch (error) {
-      console.error('Failed to create note: ', error); // 打印错误信息
-      message.error('创建笔记失败'); // 显示失败提示
+      console.error('Failed to update note:', error);
+      message.error('更新笔记失败');
     }
   };
 
-  //   // 输入框内容变化时的处理函数
-  //   const handleInputTagChange = (e) => {
-  //     setInputTag(e.target.value);
-  //   };
+  const handleAddTag = () => {
+    if (inputTag && !tags.includes(inputTag)) {
+      setTags([...tags, inputTag]);
+      setInputTag('');
+    }
+  };
 
-  //   // 添加标签的处理函数
-  //   const handleAddTag = () => {
-  //     if (inputTag && !tags.includes(inputTag)) {
-  //       setTags([...tags, inputTag]); // 将新标签添加到标签列表中
-  //       setInputTag(''); // 清空输入框
-  //     }
-  //   };
+  const handleRemoveTag = (removedTag) => {
+    const newTags = tags.filter((tag) => tag != removedTag);
+    setTags(newTags);
+  };
 
-  //   // 删除标签的处理函数
-  //   const handleRemoveTag = (removedTag) => {
-  //     const newTags = tags.filter((tag) => tag !== removedTag); //过滤掉要删除的标签
-  //     setTags(newTags); // 更新标签列表
-  //   };
+  const cleanMarkdownContent = (content) => {
+    return content.replace(/<[^>]+>/g, (match) => {
+      return match.replace(/(\w+)="true"/g, (attr) => {
+        return attr.replace('="true"', '');
+      });
+    });
+  };
 
-  // 渲染表单组件
   return (
-    <>
+    <Layout className="flex flex-col min-h-screen">
       <Navbar />
-      <div className="p-4">
-        <h1>创建笔记</h1>
-        <NoteForm onSubmit={handleSubmit} submitButtonText="创建笔记" />
-        {/* <Form
-          onFinish={handleSubmit}
-          layout="vertical" // 表单布局为垂直
-          className="max-w-2xl mx-auto" // 最大宽度为 2xl，居中
-        >
-          <Form.Item
-            label="标题"
-            name="title"
-            rules={[{ required: true, message: '请输入笔记标题' }]}
-          >
-            <Input placeholder="请输入笔记标题" />
-          </Form.Item>
+      <Content className="p-4 ">
+        <div className="flex gap-4">
+          <div className="flex-1 h-[90vh] overflow-y-auto">
+            <Typography>
+              <Title>
+                <Input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="请输入标题"
+                  className="w-full text-4xl border-0 focus:ring-0 outline-none"
+                />
+              </Title>
+            </Typography>
 
-          <Form.Item
-            label="内容"
-            name="content"
-            rules={[{ required: true, message: '请输入笔记内容' }]}
-          >
-            <Input.TextArea rows={6} placeholder="请输入笔记内容" />
-          </Form.Item>
-
-          <Form.Item
-            label="类型"
-            name="categoryId"
-            rules={[{ required: true, message: '请选择笔记类型' }]}
-          >
-            <Select placeholder="请选择笔记类型">
-              {categories.map((category) => {
-                return (
+            <div className="mb-4">
+              <label className="block mb-2">类型</label>
+              <Select
+                value={categoryId}
+                onChange={(value) => setCategoryId(value)}
+                placeholder="请选择笔记类型"
+                className="w-full"
+              >
+                {categories.map((category) => (
                   <Select.Option key={category.id} value={category.id}>
                     {category.name}
                   </Select.Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-
-          <div className="mb-4">
-            <label className="block mb-2">标签</label>
-            <div className="flex gap-2 mb-2">
-              <Input
-                value={inputTag} // 绑定输入框值
-                onChange={handleInputTagChange} // 输入框内容变化时，调用该函数
-                placeholder="输入标签" // 输入框占位符
-                onPressEnter={handleAddTag} // 按回车 调用该函数
-              />
-              <Button onClick={handleAddTag}>添加标签</Button>
+                ))}
+              </Select>
             </div>
-            <div className="flex gap-2 flex-wrap">
-              {tags.map((tag) => (
-                <Tag key={tag} closable onClose={() => handleRemoveTag(tag)}>
-                  {tag}
-                </Tag>
-              ))}
+
+            <div className="mb-4">
+              <label className="block mb-2">标签</label>
+              <div className="flex gap-2 mb-2">
+                <Input
+                  value={inputTag}
+                  onChange={(e) => setInputTag(e.target.value)}
+                  placeholder="输入标签"
+                  onPressEnter={handleAddTag}
+                  className="flex-1"
+                />
+                <Button onClick={handleAddTag} className="w-20">
+                  添加标签
+                </Button>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {tags.map((tag) => (
+                  <Tag key={tag} closable onClose={() => handleRemoveTag(tag)}>
+                    {tag}
+                  </Tag>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex-1 ">
+              <label className="block mb-2">内容</label>
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows={10}
+                cols={50}
+                placeholder="请输入 Markdown 内容"
+                className="borderrounded w-full overflow-y-auto h-[60vh]"
+              />
             </div>
           </div>
-
-           提交按钮 
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              创建笔记
-            </Button>
-          </Form.Item>
-        </Form> */}
-      </div>
-    </>
+          <div className="flex-1 h-[90vh] overflow-y-auto">
+            <div className="mt-4">
+              <Markdown
+                options={{
+                  forceBlock: true,
+                  overrides: {
+                    img: {
+                      component: ({ src, alt }) => (
+                        <img
+                          src={src}
+                          alt={alt}
+                          style={{ maxWidth: '100%', height: '100%' }}
+                        />
+                      ),
+                    },
+                  },
+                }}
+              >
+                {cleanMarkdownContent(content)}
+              </Markdown>
+            </div>
+          </div>
+        </div>
+        <Button type="primary" onClick={handleSubmit} className="mt-4">
+          创建笔记
+        </Button>
+      </Content>
+    </Layout>
   );
 };
 
