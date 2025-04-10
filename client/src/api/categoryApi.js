@@ -1,7 +1,8 @@
 import axiosInstance from './axiosInstance';
 
+// 新建分类
 export const createCategory = async (categoryData) => {
-  return axiosInstance.post('/category', categoryData);
+  return axiosInstance.post('/categories', categoryData);
 };
 
 // 获取所有分类
@@ -17,6 +18,7 @@ export const updateCategory = async (categoryId, categoryData) => {
   return axiosInstance.put(`/categories/${categoryId}`, categoryData);
 };
 
+// 删除分类
 export const deleteCategory = async (categoryId) => {
   return axiosInstance.delete(`/categories/${categoryId}`);
 };

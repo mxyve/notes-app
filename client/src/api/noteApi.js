@@ -37,3 +37,8 @@ export const searchNotes = async (userId, query) => {
   // 发送 GET 请求，将 query 作为查询参数
   return axiosInstance.get(url, { params: { keyword: query } });
 };
+
+// 查询标签
+export const getTags = async (userId) => {
+  return axiosInstance.get(`/notes/tags/${userId}`);
+};

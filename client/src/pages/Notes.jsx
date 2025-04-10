@@ -1,3 +1,5 @@
+// 分类的笔记列表
+
 import { useEffect, useState } from 'react';
 import { List, Card, Tag, Button, Modal, message, Space, Layout } from 'antd';
 import { getNotes, deleteNote } from '@/api/noteApi';
@@ -16,6 +18,7 @@ const Notes = () => {
     if (!user) navigate('/login');
   }, [navigate]);
 
+  // 获取分类的笔记
   const fetchNotes = async () => {
     try {
       const fetchNotesData = await getNotes(user.id);

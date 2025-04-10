@@ -49,7 +49,7 @@ const CreateNote = () => {
       };
       await createNote(newNoteData);
       message.success('笔记创建成功');
-      navigate('/notes');
+      navigate(`/notes/categories/${newNoteData.categoryId}`);
     } catch (error) {
       console.error('Failed to update note:', error);
       message.error('更新笔记失败');

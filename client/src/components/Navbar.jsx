@@ -196,18 +196,17 @@ const Navbar = () => {
             ),
             onClick: () => navigate('/categories'),
           },
-          {
-            key: 'notes',
-            icon: <FileAddOutlined />,
-            label: (
-              <Space>
-                {/* <FileAddOutlined /> */}
-                <span>笔记</span>
-              </Space>
-            ),
-            onClick: () => navigate('/notes'),
-          },
-
+          // {
+          //   key: 'notes',
+          //   icon: <FileAddOutlined />,
+          //   label: (
+          //     <Space>
+          //       {/* <FileAddOutlined /> */}
+          //       <span>笔记</span>
+          //     </Space>
+          //   ),
+          //   onClick: () => navigate('/notes'),
+          // },
           {
             key: '4',
             icon: <CarryOutOutlined />,
