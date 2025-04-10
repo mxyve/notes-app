@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Input, Space, List, Layout } from 'antd';
+import { Input, Space, List, Layout, Tag } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { searchNotes, getNotes } from '@/api/noteApi';
+import { searchNotes, getNotes, getTags } from '@/api/noteApi'; // 搜索，查询标签
 import { useStore } from '@/store/userStore';
 import './Sousuo.css';
 import Navbar from '@/components/Navbar';
@@ -14,34 +14,44 @@ const Sousuo = () => {
   const [notes, setNotes] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const { Content } = Layout;
+  const [tagsList, setTagsList] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+
   useEffect(() => {
     if (!user) navigate('/login');
   }, [navigate, user]);
 
-  const fetchNotes = async () => {
-    if (!user) return;
+  // 查询标签
+  const fetchTagsData = async () => {
     try {
-      const fetchNotesData = await getNotes(user.id);
-      setNotes(fetchNotesData.data);
+      const getTagsData = await getTags(user.id);
+      console.log('getTagsData', getTagsData.data);
+      setTagsList(getTagsData.data);
     } catch (error) {
-      console.log('Failed to fetch notes:', error);
-      alert('获取笔记失败');
+      console.log('Failed to get tags:', error);
+      alert('获取标签失败');
+      setTagsList([]);
     }
   };
-
   useEffect(() => {
-    fetchNotes();
-  }, [user]);
+    fetchTagsData();
+  }, []);
 
+  // Tag 组件用法
+  const handleChange = (tag, checked) => {
+    const nextSelectedTags = checked
+      ? [...selectedTags, tag]
+      : selectedTags.filter((t) => t !== tag);
+    console.log('You select:', nextSelectedTags);
+    setSelectedTags(nextSelectedTags);
+  };
+
+  // 搜索笔记
   const onSearch = async (value) => {
-    if (!user) {
-      alert('请先登录');
-      return;
-    }
     try {
-      const result = await searchNotes(user.id, value);
+      const result = await searchNotes(user.id, value, selectedTags);
       if (result.data.length === 0) {
-        alert('未找到相关笔记');
+        // alert('未找到相关笔记');
         setSearchResults([]);
       } else {
         console.log('Search results:', result.data);
@@ -68,6 +78,16 @@ const Sousuo = () => {
               enterButton
               className="search-input"
             />
+            {/* 标签 */}
+            {tagsList.map((tag) => (
+              <Tag.CheckableTag
+                key={tag}
+                checked={selectedTags.includes(tag)}
+                onChange={(checked) => handleChange(tag, checked)}
+              >
+                {tag}
+              </Tag.CheckableTag>
+            ))}
             {searchResults.length > 0 && (
               <List
                 dataSource={searchResults}
@@ -78,6 +98,7 @@ const Sousuo = () => {
                       <p className="note-content">
                         {item.content.substring(0, 60) + '...'}
                       </p>
+                      <a href={`/notes/${item.id}`}>查看详情</a>
                     </div>
                   </List.Item>
                 )}
