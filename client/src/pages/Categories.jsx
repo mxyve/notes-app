@@ -14,8 +14,8 @@ import Navbar from '@/components/Navbar';
 import dayjs from 'dayjs';
 
 const Categories = () => {
-  const navigate = useNavigate();
   const { user } = useStore();
+  const navigate = useNavigate();
   const { Content } = Layout;
   // 目前所有需要登录的页面，就是使用 useEffect 副作用 Hook，是否有 user 信息，来跳转到 login 页面，只执行一次。不加这个的页面就不需要登录，比如 Home 页面。当然，也有其他方法，可以思考，比如拦截器中实现。来根据 store 中
   useEffect(() => {
@@ -160,7 +160,7 @@ const Categories = () => {
                     (note) => note.categoryId === item.id,
                   )}
                   renderItem={(note) => (
-                    <a href={`/notes/${note.id}`}>
+                    <a href={`/notes/edit/${note.id}`}>
                       <List.Item>
                         {' '}
                         {/* 2025-04-09 16:58:41 */}

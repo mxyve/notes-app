@@ -12,6 +12,7 @@ import {
   RobotOutlined,
   SearchOutlined,
   PlusSquareOutlined,
+  BgColorsOutlined,
 } from '@ant-design/icons';
 import {
   Button,
@@ -208,7 +209,7 @@ const Navbar = () => {
           //   onClick: () => navigate('/notes'),
           // },
           {
-            key: '4',
+            key: 'todoList',
             icon: <CarryOutOutlined />,
             label: (
               <Space>
@@ -216,6 +217,7 @@ const Navbar = () => {
                 <span>待办箱</span>
               </Space>
             ),
+            onClick: () => navigate('/todoList'),
           },
           {
             key: '5',
@@ -228,12 +230,23 @@ const Navbar = () => {
             ),
           },
           {
+            key: 'drawing',
+            icon: <BgColorsOutlined />,
+            label: (
+              <Space>
+                {/* <FormOutlined /> */}
+                <span>画板</span>
+              </Space>
+            ),
+            onClick: () => navigate('/drawing'),
+          },
+          {
             key: '6',
             icon: <DeleteOutlined />,
             label: (
               <Space>
                 {/* <DeleteOutlined /> */}
-                <span>回收站</span>
+                <span>笔记回收站</span>
               </Space>
             ),
           },

@@ -47,39 +47,41 @@ const CategoryNotes = () => {
           grid={{ gutter: 16, column: 4 }}
           dataSource={notes}
           renderItem={(item) => (
-            <Card className="bg-blue-100 m-2">
-              <Card.Meta
-                title={item.title}
-                description={item.content.substring(0, 60) + '...'}
-              />
-              {item.tags && item.tags.length > 0 && (
-                <div className="tags-container">
-                  {item.tags.map((tag) => (
-                    <Tag color="cyan" key={tag}>
-                      {tag}
-                    </Tag>
-                  ))}
-                </div>
-              )}
-              <Space>
-                <a href={`/notes/${item.id}`}>査看详情</a>
-                <Button
+            <a href={`/notes/edit/${item.id}`}>
+              <Card className="bg-blue-100 m-2">
+                <Card.Meta
+                  title={item.title}
+                  description={item.content.substring(0, 60) + '...'}
+                />
+                {item.tags && item.tags.length > 0 && (
+                  <div className="tags-container">
+                    {item.tags.map((tag) => (
+                      <Tag color="cyan" key={tag}>
+                        {tag}
+                      </Tag>
+                    ))}
+                  </div>
+                )}
+                <Space>
+                  {/* <a href={`/notes/${item.id}`}>査看详情</a> */}
+                  {/* <Button
                   type="primary"
                   onClick={() => navigate(`/notes/edit/${item.id}`)}
                 >
                   编辑
-                </Button>
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    setModalVisible(true);
-                    setSelectedNoteId(item.id);
-                  }}
-                >
-                  删除
-                </Button>
-              </Space>
-            </Card>
+                </Button> */}
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      setModalVisible(true);
+                      setSelectedNoteId(item.id);
+                    }}
+                  >
+                    删除
+                  </Button>
+                </Space>
+              </Card>
+            </a>
           )}
         />
         <Modal

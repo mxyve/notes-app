@@ -5,7 +5,8 @@ import Navbar from '@/components/Navbar';
 import { createNote } from '@/api/noteApi'; // 创建笔记
 import { getCategories } from '@/api/categoryApi'; // 所有分类数据
 import { Layout, Typography, Input, Button, Select, Tag, message } from 'antd';
-import Markdown from 'markdown-to-jsx';
+import { MdEditor } from 'md-editor-rt';
+import 'md-editor-rt/lib/style.css';
 
 const CreateNote = () => {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ const CreateNote = () => {
       };
       await createNote(newNoteData);
       message.success('笔记创建成功');
-      navigate(`/notes/categories/${newNoteData.categoryId}`);
+      // navigate(`/notes/categories/${newNoteData.categoryId}`);
     } catch (error) {
       console.error('Failed to update note:', error);
       message.error('更新笔记失败');
@@ -92,83 +93,61 @@ const CreateNote = () => {
                 />
               </Title>
             </Typography>
-
-            <div className="mb-4">
-              <label className="block mb-2">类型</label>
-              <Select
-                value={categoryId}
-                onChange={(value) => setCategoryId(value)}
-                placeholder="请选择笔记类型"
-                className="w-full"
-              >
-                {categories.map((category) => (
-                  <Select.Option key={category.id} value={category.id}>
-                    {category.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            </div>
-
-            <div className="mb-4">
-              <label className="block mb-2">标签</label>
-              <div className="flex gap-2 mb-2">
-                <Input
-                  value={inputTag}
-                  onChange={(e) => setInputTag(e.target.value)}
-                  placeholder="输入标签"
-                  onPressEnter={handleAddTag}
-                  className="flex-1"
-                />
-                <Button onClick={handleAddTag} className="w-20">
-                  添加标签
-                </Button>
+            {/* 添加一个 flex 容器来横向排列类型和标签部分 */}
+            <div className="flex gap-4 mb-4">
+              <div className="w-1/3">
+                <label className="block mb-2">类型</label>
+                <Select
+                  value={categoryId}
+                  onChange={(value) => setCategoryId(value)}
+                  placeholder="请选择笔记类型"
+                  className="w-full"
+                >
+                  {categories.map((category) => (
+                    <Select.Option key={category.id} value={category.id}>
+                      {category.name}
+                    </Select.Option>
+                  ))}
+                </Select>
               </div>
-              <div className="flex gap-2 flex-wrap">
-                {tags.map((tag) => (
-                  <Tag key={tag} closable onClose={() => handleRemoveTag(tag)}>
-                    {tag}
-                  </Tag>
-                ))}
+              <div className="w-2/3">
+                <label className="block mb-2">标签</label>
+                <div className="flex gap-2 mb-2">
+                  <Input
+                    value={inputTag}
+                    onChange={(e) => setInputTag(e.target.value)}
+                    placeholder="输入标签"
+                    onPressEnter={handleAddTag}
+                    className="flex-1"
+                  />
+                  <Button onClick={handleAddTag} className="w-20">
+                    添加标签
+                  </Button>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {tags.map((tag) => (
+                    <Tag
+                      key={tag}
+                      closable
+                      onClose={() => handleRemoveTag(tag)}
+                    >
+                      {tag}
+                    </Tag>
+                  ))}
+                </div>
               </div>
             </div>
-
-            <div className="flex-1 ">
-              <label className="block mb-2">内容</label>
-              <textarea
+            <div>
+              <MdEditor
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
-                rows={10}
-                cols={50}
-                placeholder="请输入 Markdown 内容"
-                className="borderrounded w-full overflow-y-auto h-[60vh]"
+                onChange={(newContent) => setContent(newContent)}
+                preview="edit" // 设置预览模式
               />
-            </div>
-          </div>
-          <div className="flex-1 h-[90vh] overflow-y-auto">
-            <div className="mt-4">
-              <Markdown
-                options={{
-                  forceBlock: true,
-                  overrides: {
-                    img: {
-                      component: ({ src, alt }) => (
-                        <img
-                          src={src}
-                          alt={alt}
-                          style={{ maxWidth: '100%', height: '100%' }}
-                        />
-                      ),
-                    },
-                  },
-                }}
-              >
-                {cleanMarkdownContent(content)}
-              </Markdown>
             </div>
           </div>
         </div>
         <Button type="primary" onClick={handleSubmit} className="mt-4">
-          创建笔记
+          添加笔记
         </Button>
       </Content>
     </Layout>

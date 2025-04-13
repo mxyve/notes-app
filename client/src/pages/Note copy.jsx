@@ -4,9 +4,7 @@ import { getNote } from '@/api/noteApi';
 import { useStore } from '@/store/userStore';
 import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm'; // 支持 GitHub Flavored Markdown
-import rehypeRaw from 'rehype-raw'; // 支持原始 HTML
+import Markdown from 'markdown-to-jsx';
 
 const Note = () => {
   const { user } = useStore();
@@ -37,14 +35,6 @@ const Note = () => {
 
   if (!note) return <div>Loading...</div>;
 
-  const cleanMarkdownContent = (content) => {
-    return content.replace(/<[^>]+>/g, (match) => {
-      return match.replace(/(\w+)="true"/g, (attr) => {
-        return attr.replace('="true"', '');
-      });
-    });
-  };
-
   return (
     <Layout>
       <Navbar />
@@ -56,21 +46,24 @@ const Note = () => {
           </Tag>
         ))}
         <div className="mt-4 flex flex-wrap gap-2">
-          {/* 使用 react-markdown 进行解析 */}
-          <ReactMarkdown
-            children={cleanMarkdownContent(note.content)}
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw]}
-            components={{
-              img: ({ alt, src }) => (
-                <img
-                  src={src}
-                  alt={alt}
-                  style={{ maxWidth: '100%', height: 'auto' }}
-                />
-              ),
+          {/* 使用 markdown - to - jsx 进行解析 */}
+          <Markdown
+            options={{
+              overrides: {
+                img: {
+                  component: ({ src, alt }) => (
+                    <img
+                      src={src}
+                      alt={alt}
+                      style={{ maxWidth: '100%', height: 'auto' }}
+                    />
+                  ),
+                },
+              },
             }}
-          />
+          >
+            {note.content}
+          </Markdown>
         </div>
       </Content>
     </Layout>
