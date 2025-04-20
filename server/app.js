@@ -4,10 +4,15 @@ import cors from "cors";
 import userRoutes from "./routes/userRoutes.js";
 import noteRoutes from "./routes/noteRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
+import pictureRoutes from "./routes/pictureRoutes.js";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
 const app = express();
+// 设置请求体大小限制
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 const allowedOrigins = ["http://localhost:5173"];
 // const allowedOrigins = ["http://124.223.143.202:8081"];
@@ -31,6 +36,7 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/notes", noteRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/pictures", pictureRoutes);
 
 app.listen(8081, () => {
   console.log("Server is running on port 8081");

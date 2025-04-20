@@ -46,7 +46,7 @@ const Note = () => {
           </Tag>
         ))}
         <div className="mt-4 flex flex-wrap gap-2">
-          {/* 使用 markdown - to - jsx 进行解析 */}
+          {/* 使用 markdown-to-jsx 进行解析 */}
           <Markdown
             options={{
               overrides: {

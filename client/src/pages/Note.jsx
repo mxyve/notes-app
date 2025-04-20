@@ -9,15 +9,15 @@ import remarkGfm from 'remark-gfm'; // 支持 GitHub Flavored Markdown
 import rehypeRaw from 'rehype-raw'; // 支持原始 HTML
 
 const Note = () => {
-  const { user } = useStore();
+  // const { user } = useStore();
   const navigate = useNavigate();
   const { id } = useParams();
   const [note, setNote] = useState(null);
   const { Content } = Layout;
 
-  useEffect(() => {
-    if (!user) navigate('/login');
-  }, [navigate, user]);
+  // useEffect(() => {
+  //   if (!user) navigate('/login');
+  // }, [navigate, user]);
 
   useEffect(() => {
     const fetchNoteDetails = async () => {

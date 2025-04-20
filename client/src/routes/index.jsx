@@ -12,7 +12,9 @@ import EditNote from '@/pages/EditNote';
 import Search from '@/pages/Search';
 import AiAssistant from '@/pages/AiAssiatant';
 import TodoList from '@/pages/TodoList';
-import DrawingBoard from '@/pages/DrawingBoard';
+import DrawingList from '@/pages/DrawingList';
+import DrawingCreate from '@/pages/DrawingCreate';
+import DrawingDetail from '@/pages/DrawingDetail';
 
 const AppRoutes = () => {
   return (
@@ -29,7 +31,9 @@ const AppRoutes = () => {
       <Route path="/create-note" element={<CreateNote />} />
       <Route path="/notes/edit/:noteId" element={<EditNote />} />
       <Route path="/todoList" element={<TodoList />} />
-      <Route path="/drawing" element={<DrawingBoard />} />
+      <Route path="/drawing" element={<DrawingList />} />
+      <Route path="/drawing-create" element={<DrawingCreate />} />
+      <Route path="/drawing-detail/:id" element={<DrawingDetail />} />
     </Routes>
   );
 };
