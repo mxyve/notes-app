@@ -10,7 +10,8 @@ import Note from '@/pages/Note';
 import CreateNote from '@/pages/CreateNote';
 import EditNote from '@/pages/EditNote';
 import Search from '@/pages/Search';
-import AiAssistant from '@/pages/AiAssiatant';
+import AiChat from '@/pages/ai/AiChat';
+import AiOcr from '@/pages/ai/AiOcr';
 import TodoList from '@/pages/TodoList';
 import DrawingList from '@/pages/DrawingList';
 import DrawingCreate from '@/pages/DrawingCreate';
@@ -23,7 +24,8 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/search" element={<Search />} />
-      <Route path="/ai" element={<AiAssistant />} />
+      <Route path="/ai/chat" element={<AiChat />} />
+      <Route path="/ai/ocr" element={<AiOcr />} />
       <Route path="/categories" element={<Categories />} />
       <Route path="/notes/categories/:categoryId" element={<CategoryNotes />} />
       {/* <Route path="/notes" element={<Notes />} /> */}

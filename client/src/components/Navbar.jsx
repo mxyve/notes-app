@@ -13,6 +13,10 @@ import {
   SearchOutlined,
   PlusSquareOutlined,
   BgColorsOutlined,
+  CustomerServiceOutlined,
+  WechatWorkOutlined,
+  ScanOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import {
   Button,
@@ -24,6 +28,7 @@ import {
   Typography,
   Modal,
   Input,
+  FloatButton,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/userstore';
@@ -32,7 +37,6 @@ const { Sider } = Layout;
 const Navbar = () => {
   const navigate = useNavigate();
   const { user, logout } = useStore();
-
   // 从 localStorage 中获取 collapsed 状态，如果没有则默认为 false
   // collapsed为true时表示收缩，为false时表示展开
   const [collapsed, setCollapsed] = useState(() => {
@@ -180,11 +184,22 @@ const Navbar = () => {
             icon: <RobotOutlined />,
             label: (
               <Space>
-                {/* <RobotOutlined /> */}
+                {/* <VideoCameraOutlined /> */}
                 <span>AI助手</span>
               </Space>
             ),
-            onClick: () => navigate('/ai'),
+            children: [
+              {
+                key: 'chat',
+                label: 'AI问答',
+                onClick: () => navigate('/ai/chat'),
+              },
+              {
+                key: 'ocr',
+                label: '图文识别',
+                onClick: () => navigate('/ai/ocr'),
+              },
+            ],
           },
           {
             key: 'categories',
@@ -252,6 +267,30 @@ const Navbar = () => {
           },
         ]}
       />
+      {/* 悬浮按钮 */}
+      <FloatButton.Group
+        trigger="click"
+        type="primary"
+        // style={{ insetInlineEnd: 300 }
+        icon={<RobotOutlined />}
+        placement="top"
+        style={{
+          position: 'absolute',
+          bottom: '80px',
+          left: '10px', // 根据导航栏状态调整left值
+        }}
+      >
+        <FloatButton
+          icon={<ScanOutlined />}
+          // href=""
+          tooltip={<div>反馈</div>}
+        />
+        <FloatButton
+          icon={<SettingOutlined />}
+          // href=""
+          tooltip={<div>设置</div>}
+        />
+      </FloatButton.Group>
       <Button
         type="text"
         icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
