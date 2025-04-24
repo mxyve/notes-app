@@ -32,6 +32,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile # 明确指定路径
           push: true
           tags: ${{ secrets.ACR_REGISTRY }}:latest
           cache-from: type=gha
