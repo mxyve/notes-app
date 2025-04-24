@@ -31,7 +31,7 @@ EXPOSE 3001
 FROM nginx:alpine
 
 # 将构建后的前端文件复制到 Nginx 的静态文件目录
-COPY --from=0 /app/client/build /usr/share/nginx/html
+COPY --from=0 /app/client/dist /usr/share/nginx/html
 
 # 暴露前端服务端口
 EXPOSE 8081
