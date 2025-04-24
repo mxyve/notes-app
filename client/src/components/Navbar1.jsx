@@ -1,7 +1,7 @@
 // 使用 unocss 编写的自定义导航栏组件
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useStore } from '@/store/userstore';
+import { useStore } from '@/store/userStore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Avatar } from 'antd';
 import './Navbar.css'; //确保正确导入 UnoCss 文件

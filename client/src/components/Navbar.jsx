@@ -31,7 +31,7 @@ import {
   FloatButton,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { useStore } from '@/store/userstore';
+import { useStore } from '@/store/userStore';
 const { Sider } = Layout;
 
 const Navbar = () => {

@@ -8,7 +8,7 @@ import {
   AppstoreOutlined,
   FileOutlined,
 } from '@ant-design/icons';
-import { useStore } from '@/store/userstore';
+import { useStore } from '@/store/userStore';
 
 const { Header } = Layout;
 const { Text } = Typography;
