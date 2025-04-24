@@ -1,4 +1,4 @@
-name: Express CI/CD
+name: React CI/CD
 on:
   push:
     branches: [master]
@@ -20,11 +20,21 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: ${{ secrets.ACR_REGISTRY }}:latest
-          cache-from: type=gha # 使用 GitHub Actions 缓存
-          cache-to: type=gha,mode=max # 写入缓存
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          # 多阶段构建缓存支持
+          platforms: linux/amd64
