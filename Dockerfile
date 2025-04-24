@@ -13,8 +13,7 @@ RUN npm config set registry https://registry.npmmirror.com
 WORKDIR /app/client
 RUN npm cache clean --force
 RUN npm ci --frozen-lockfile
-# 调试步骤：输出已安装的依赖列表
-RUN npm list unocss || npm install unocss
+
 
 # 复制前端源代码并构建
 COPY client/ .

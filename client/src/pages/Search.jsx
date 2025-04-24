@@ -3,7 +3,6 @@ import { Input, Space, List, Layout, Tag } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { searchNotes, getNotes, getTags } from '@/api/noteApi'; // 搜索，查询标签
 import { useStore } from '@/store/userStore';
-import './Sousuo.css';
 import Navbar from '@/components/Navbar';
 
 const { Search } = Input;
