@@ -12,6 +12,9 @@ RUN npm config set registry https://registry.npmmirror.com
 # 安装前端依赖
 WORKDIR /app/client
 RUN npm ci --frozen-lockfile
+# 调试步骤：输出已安装的依赖列表
+RUN npm list
+
 # 复制前端源代码并构建
 COPY client/ .
 RUN npm run build
