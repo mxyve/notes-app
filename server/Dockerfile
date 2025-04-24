@@ -8,4 +8,4 @@ RUN npm config set registry https://registry.npmmirror.com && \
 # 最后复制所有源代码
 COPY . .
 EXPOSE 3001
-CMD ["npm","start"]
+CMD ["npm","start","app.js"]

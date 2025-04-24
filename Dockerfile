@@ -9,7 +9,7 @@ COPY client/package*.json client/
 COPY server/package*.json server/
 RUN npm config set registry https://registry.npmmirror.com
 
-CMD ["npm","start"]
+CMD ["npm","start","app.js"]
 
 # 安装前端依赖
 WORKDIR /app/client
