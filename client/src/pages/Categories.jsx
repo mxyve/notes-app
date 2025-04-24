@@ -8,7 +8,7 @@ import {
   deleteCategory,
 } from '@/api/categoryApi'; // 获取所有分类，新建分类
 import { getNotesByCategory } from '@/api/noteApi'; // 根据某个用户某个分类的所有笔记
-import { useStore } from '@/store/userstore';
+import { useStore } from '@/store/userStore';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import dayjs from 'dayjs';
