@@ -25,8 +25,8 @@
     "react-syntax-highlighter": "^15.6.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
-    "unocss": "^0.34.1",
-    "zustand": "^5.0.3"
+    "zustand": "^5.0.3",
+    "unocss": "^66.1.0-beta.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
