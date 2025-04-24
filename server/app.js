@@ -36,8 +36,8 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/pictures", pictureRoutes);
 app.use("/api/ai", aiRoutes);
 
-// app.listen(8081, () => {
-//   console.log("Server is running on port 8081");
-// });
+app.listen(5173, () => {
+  console.log("Server is running on port 5173");
+});
 
 export default app;
