@@ -9,11 +9,12 @@ COPY client/package*.json client/
 COPY server/package*.json server/
 RUN npm config set registry https://registry.npmmirror.com
 
+CMD ["npm","start"]
+
 # 安装前端依赖
 WORKDIR /app/client
 RUN npm cache clean --force
 RUN npm ci --frozen-lockfile
-
 
 # 复制前端源代码并构建
 COPY client/ .

@@ -11,8 +11,8 @@ import aiRoutes from "./routes/aiRoutes.js";
 
 const app = express();
 
-// const allowedOrigins = ["http://localhost:5173"];
-const allowedOrigins = ["http://124.223.143.202:8081"];
+const allowedOrigins = ["http://localhost:5173"];
+// const allowedOrigins = ["http://124.223.143.202:8081"];
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -36,8 +36,8 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/pictures", pictureRoutes);
 app.use("/api/ai", aiRoutes);
 
-app.listen(8081, () => {
-  console.log("Server is running on port 8081");
-});
+// app.listen(8081, () => {
+//   console.log("Server is running on port 8081");
+// });
 
 export default app;
