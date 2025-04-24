@@ -3,7 +3,7 @@ import { Layout, Button, Card, List, Modal, message } from 'antd';
 import Navbar from '@/components/Navbar';
 import { useStore } from '@/store/userStore';
 import { useNavigate } from 'react-router-dom';
-import { getPictures, deletePicture } from '@/api/pictureAPi';
+import { getPictures, deletePicture } from '@/api/pictureApi';
 
 const DrawingList = () => {
   const { Content } = Layout;
