@@ -1,27 +1,3 @@
-# name: React CI/CD
-# on:
-#   push:
-#     branches: [master]
-
-# jobs:
-#   build-and-push:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-#       - name: Login to Aliyun ACR
-#         uses: docker/login-action@v2
-#         with:
-#           registry: ${{ secrets.ACR_REGISTRY }}
-#           username: ${{ secrets.ACR_USERNAME }}
-#           password: ${{ secrets.ACR_PASSWORD }}
-#       - name: Build and Push Docker Image
-#         uses: docker/build-push-action@v5
-#         with:
-#           context: .
-#           push: true
-#           tags: ${{ secrets.ACR_REGISTRY }}:latest
-
 name: Express CI/CD
 on:
   push:
