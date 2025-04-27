@@ -16,17 +16,20 @@
     "axios": "^1.8.4",
     "compressorjs": "^1.2.1",
     "dayjs": "^1.11.13",
+    "draft-js": "^0.11.7",
+    "global": "^4.4.0",
     "markdown-to-jsx": "^7.7.4",
     "md-editor-rt": "^5.4.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
+    "react-quill-new": "^3.4.6",
     "react-router-dom": "^7.4.0",
     "react-syntax-highlighter": "^15.6.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
-    "zustand": "^5.0.3",
-    "unocss": "^66.1.0-beta.12"
+    "unocss": "^66.1.0-beta.12",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",

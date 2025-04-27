@@ -12,10 +12,10 @@ import EditNote from '@/pages/EditNote';
 import Search from '@/pages/Search';
 import AiChat from '@/pages/ai/AiChat';
 import AiOcr from '@/pages/ai/AiOcr';
-import TodoList from '@/pages/TodoList';
-import DrawingList from '@/pages/DrawingList';
-import DrawingCreate from '@/pages/DrawingCreate';
-import DrawingDetail from '@/pages/DrawingDetail';
+import TodoList from '@/pages/todolist/TodoList';
+import DrawingList from '@/pages/drawingboard/DrawingList';
+import DrawingCreate from '@/pages/drawingboard/DrawingCreate';
+import DrawingDetail from '@/pages/drawingboard/DrawingDetail';
 
 const AppRoutes = () => {
   return (

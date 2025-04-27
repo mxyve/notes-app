@@ -6,7 +6,7 @@ import noteRoutes from "./routes/noteRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import pictureRoutes from "./routes/pictureRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
-
+import todoListRoutes from "./routes/todoListRoutes.js";
 // dotenv.config();
 
 const app = express();
@@ -35,6 +35,7 @@ app.use("/api/notes", noteRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/pictures", pictureRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/todolist", todoListRoutes);
 
 app.listen(5173, () => {
   console.log("Server is running on port 5173");

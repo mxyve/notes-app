@@ -10,4 +10,8 @@ export default defineConfig({
       '@': '/src',
     },
   },
+  define: {
+    // 定义 global 变量，使其指向 window
+    global: 'window',
+  },
 });
