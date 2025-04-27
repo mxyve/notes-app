@@ -92,4 +92,4 @@ COPY --from=build /app/server /app/server
 EXPOSE 3001
 
 # 启动后端应用，这里假设后端启动脚本是 npm start，根据实际情况修改
-CMD ["npm", "start"]
+CMD ["npm", "app.js"]
