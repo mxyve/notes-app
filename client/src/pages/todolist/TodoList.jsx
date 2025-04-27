@@ -10,7 +10,6 @@ import {
   message,
 } from 'antd';
 import Navbar from '@/components/Navbar';
-import TodoDetail from '@/components/todoDetail';
 import { getTodoLists, getTodoList, updateTodoList } from '@/api/todoListApi';
 import { useStore } from '@/store/userStore';
 import RichTextEditor from '@/components/RichTextEditor';
