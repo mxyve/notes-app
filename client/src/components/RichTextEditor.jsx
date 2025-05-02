@@ -33,7 +33,7 @@ const RichTextEditor = ({ value, onChange }) => {
             ['link', 'image', 'video'],
           ],
         }}
-        // style={{ hight: '500px' }}
+        // style={{ height: '500px' }}
       />
     </div>
   );
