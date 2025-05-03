@@ -47,3 +47,13 @@ export const getUser = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// 获取全部用户信息
+export const getUsers = async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM users ");
+    res.status(200).json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -160,7 +160,7 @@ const Categories = () => {
                     (note) => note.categoryId === item.id,
                   )}
                   renderItem={(note) => (
-                    <a href={`/notes/edit/${note.id}`}>
+                    <a href={`/notes/${note.id}`}>
                       <List.Item>
                         {' '}
                         {/* 2025-04-09 16:58:41 */}

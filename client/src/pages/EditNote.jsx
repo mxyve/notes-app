@@ -146,6 +146,7 @@ const EditNote = () => {
                 value={content}
                 onChange={(newContent) => setContent(newContent)}
                 preview="edit" // 设置预览模式
+                showToolbarName // 在工具栏下面显示对应的文字名称
               />
             </div>
           </div>

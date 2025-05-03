@@ -11,3 +11,7 @@ export const loginUser = async (userData) => {
 export const getUser = async (userId) => {
   return axiosInstance.get(`/users/${userId}`);
 };
+
+export const getUsers = async () => {
+  return axiosInstance.get('/users');
+};
