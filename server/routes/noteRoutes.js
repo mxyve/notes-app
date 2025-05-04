@@ -9,6 +9,8 @@ import {
   getNotesByCategory,
   searchNotes,
   getTags,
+  updateNoteLike,
+  updateNoteCollection,
 } from "../controllers/noteController.js";
 
 const router = express.Router();
@@ -21,5 +23,7 @@ router.put("/:id", updateNote);
 router.delete("/:id", deleteNote);
 router.get("/search/:userId", searchNotes);
 router.get("/tags/:userId", getTags);
+router.put("/like/:id", updateNoteLike);
+router.put("/collect/:id", updateNoteCollection);
 
 export default router;

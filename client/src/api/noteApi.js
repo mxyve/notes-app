@@ -11,8 +11,8 @@ export const getNotes = async (userId) => {
 };
 
 // 获取单个笔记
-export const getNote = async (noteId) => {
-  return axiosInstance.get(`/notes/${noteId}`);
+export const getNote = async (noteId, config) => {
+  return axiosInstance.get(`/notes/${noteId}`, config);
 };
 
 //查询某个用户某个分类的所有笔记
@@ -48,4 +48,18 @@ export const searchNotes = async (userId, keyword, tags) => {
 // 查询标签
 export const getTags = async (userId) => {
   return axiosInstance.get(`/notes/tags/${userId}`);
+};
+
+// 点赞
+export const updateNoteLike = async (id, userId) => {
+  return axiosInstance.put(`/notes/like/${id}`, {
+    userId,
+  });
+};
+
+// 收藏
+export const updateNoteCollection = async (id, userId) => {
+  return axiosInstance.put(`/notes/collect/${id}`, {
+    userId,
+  });
 };

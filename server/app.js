@@ -8,6 +8,7 @@ import pictureRoutes from "./routes/pictureRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import todoListRoutes from "./routes/todoListRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
+import communityRoutes from "./routes/communityRoutes.js";
 // dotenv.config();
 
 const app = express();
@@ -38,6 +39,7 @@ app.use("/api/pictures", pictureRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/todolist", todoListRoutes);
 app.use("/api/comment", commentRoutes);
+app.use("/api/community", communityRoutes);
 
 app.listen(5173, () => {
   console.log("Server is running on port 5173");

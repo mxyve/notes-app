@@ -16,7 +16,8 @@ import TodoList from '@/pages/todolist/TodoList';
 import DrawingList from '@/pages/drawingboard/DrawingList';
 import DrawingCreate from '@/pages/drawingboard/DrawingCreate';
 import DrawingDetail from '@/pages/drawingboard/DrawingDetail';
-
+import Community from '@/pages/community/Community';
+import CommunityNote from '@/pages/community/CommunityNote';
 const AppRoutes = () => {
   return (
     <Routes>
@@ -36,6 +37,8 @@ const AppRoutes = () => {
       <Route path="/drawing" element={<DrawingList />} />
       <Route path="/drawing-create" element={<DrawingCreate />} />
       <Route path="/drawing-detail/:id" element={<DrawingDetail />} />
+      <Route path="/community" element={<Community />} />
+      <Route path="/community/note/:id" element={<CommunityNote />} />
     </Routes>
   );
 };

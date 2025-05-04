@@ -17,6 +17,7 @@ import {
   WechatWorkOutlined,
   ScanOutlined,
   SettingOutlined,
+  GatewayOutlined,
 } from '@ant-design/icons';
 import {
   Button,
@@ -254,6 +255,16 @@ const Navbar = () => {
               </Space>
             ),
             onClick: () => navigate('/drawing'),
+          },
+          {
+            key: 'community',
+            icon: <GatewayOutlined />,
+            label: (
+              <Space>
+                <span>社区</span>
+              </Space>
+            ),
+            onClick: () => navigate('/community'),
           },
           {
             key: '6',
