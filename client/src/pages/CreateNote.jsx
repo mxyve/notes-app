@@ -4,9 +4,19 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { createNote } from '@/api/noteApi'; // 创建笔记
 import { getCategories } from '@/api/categoryApi'; // 所有分类数据
-import { Layout, Typography, Input, Button, Select, Tag, message } from 'antd';
+import {
+  Layout,
+  Typography,
+  Input,
+  Button,
+  Select,
+  Tag,
+  message,
+  Switch,
+} from 'antd';
 import { MdEditor } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
+import NoteWordCount from '@/components/NoteWordCount';
 
 const CreateNote = () => {
   const navigate = useNavigate();
@@ -19,6 +29,8 @@ const CreateNote = () => {
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
   const [inputTag, setInputTag] = useState('');
+  const [wordCount, setWordCount] = useState(0);
+  const [isPublic, setIsPublic] = useState(0);
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -47,13 +59,15 @@ const CreateNote = () => {
         categoryId,
         tags,
         userId: user.id,
+        wordCount: wordCount,
+        isPublic: isPublic,
       };
       await createNote(newNoteData);
       message.success('笔记创建成功');
       // navigate(`/notes/categories/${newNoteData.categoryId}`);
     } catch (error) {
       console.error('Failed to update note:', error);
-      message.error('更新笔记失败');
+      message.error('创建笔记失败');
     }
   };
 
@@ -124,6 +138,19 @@ const CreateNote = () => {
                     添加标签
                   </Button>
                 </div>
+                {/* 添加公开/私有开关 */}
+                <div className="mb-4 flex items-center">
+                  <span className="mr-2">是否公开:</span>
+                  <Switch
+                    checked={isPublic === 1}
+                    onChange={(checked) => setIsPublic(checked ? 1 : 0)}
+                    checkedChildren="公开"
+                    unCheckedChildren="私有"
+                  />
+                  <span className="ml-2 text-gray-500">
+                    {isPublic === 1 ? '所有人可见' : '仅自己可见'}
+                  </span>
+                </div>
                 <div className="flex gap-2 flex-wrap">
                   {tags.map((tag) => (
                     <Tag
@@ -143,6 +170,7 @@ const CreateNote = () => {
                 onChange={(newContent) => setContent(newContent)}
                 preview="edit" // 设置预览模式
               />
+              <NoteWordCount content={content} onCountChange={setWordCount} />
             </div>
           </div>
         </div>

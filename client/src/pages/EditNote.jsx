@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Button, Tag, message, Select, Layout, Typography } from 'antd';
+import {
+  Input,
+  Button,
+  Tag,
+  message,
+  Select,
+  Layout,
+  Typography,
+  Switch,
+} from 'antd';
 import { updateNote, getNote } from '@/api/noteApi';
 import { getCategories } from '@/api/categoryApi';
 import { useStore } from '@/store/userStore';
@@ -7,6 +16,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { MdEditor } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
+import NoteWordCount from '@/components/NoteWordCount';
 
 const EditNote = () => {
   const navigate = useNavigate();
@@ -21,6 +31,8 @@ const EditNote = () => {
   const [categoryId, setCategoryId] = useState('');
   const { Content } = Layout;
   const { Title } = Typography;
+  const [wordCount, setWordCount] = useState(0);
+  const [isPublic, setIsPublic] = useState(0);
 
   // 在组件挂载或者 noteId 改变时异步获取笔记数据与分类数据
   useEffect(() => {
@@ -58,6 +70,8 @@ const EditNote = () => {
         tags,
         // 笔记所属用户的 ID，从 user 对象中获取
         userId: user.id,
+        wordCount: wordCount,
+        isPublic: isPublic,
       };
       // 调用 updateNote 函数，传入笔记 ID 和更新的数据，等待服务器响应
       await updateNote(noteId, updatedNoteData);
@@ -128,6 +142,19 @@ const EditNote = () => {
                     添加标签
                   </Button>
                 </div>
+                {/* 添加公开/私有开关 */}
+                <div className="mb-4 flex items-center">
+                  <span className="mr-2">是否公开:</span>
+                  <Switch
+                    checked={isPublic === 1}
+                    onChange={(checked) => setIsPublic(checked ? 1 : 0)}
+                    checkedChildren="公开"
+                    unCheckedChildren="私有"
+                  />
+                  <span className="ml-2 text-gray-500">
+                    {isPublic === 1 ? '所有人可见' : '仅自己可见'}
+                  </span>
+                </div>
                 <div className="flex gap-2 flex-wrap">
                   {tags.map((tag) => (
                     <Tag
@@ -148,6 +175,7 @@ const EditNote = () => {
                 preview="edit" // 设置预览模式
                 showToolbarName // 在工具栏下面显示对应的文字名称
               />
+              <NoteWordCount content={content} onCountChange={setWordCount} />
             </div>
           </div>
         </div>

@@ -6,8 +6,8 @@ export const createNote = async (noteData) => {
 };
 
 // 查询某个用户的所有笔记
-export const getNotes = async (userId) => {
-  return axiosInstance.get(`/notes/user/${userId}`);
+export const getNotes = async (userId, isDelete) => {
+  return axiosInstance.get(`/notes/user/${userId}`, isDelete);
 };
 
 // 获取单个笔记

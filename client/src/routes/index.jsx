@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Register from '@/pages/Register';
 import Login from '@/pages/Login';
-import Home from '@/pages/Home';
+import Home from '@/pages/home/Home';
 import Categories from '@/pages/Categories';
 import CategoryNotes from '@/pages/CategoryNotes';
 import Notes from '@/pages/Notes';
@@ -18,6 +18,10 @@ import DrawingCreate from '@/pages/drawingboard/DrawingCreate';
 import DrawingDetail from '@/pages/drawingboard/DrawingDetail';
 import Community from '@/pages/community/Community';
 import CommunityNote from '@/pages/community/CommunityNote';
+import MyLikeNotes from '@/pages/home/MyLikeNotes';
+import MyCollectNotes from '@/pages/home/MyCollectNotes';
+import MyCommentNotes from '@/pages/home/MyCommentNotes';
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -39,6 +43,9 @@ const AppRoutes = () => {
       <Route path="/drawing-detail/:id" element={<DrawingDetail />} />
       <Route path="/community" element={<Community />} />
       <Route path="/community/note/:id" element={<CommunityNote />} />
+      <Route path="/home/like-note/:userId" element={<MyLikeNotes />} />
+      <Route path="/home/collect-note/:userId" element={<MyCollectNotes />} />
+      <Route path="/home/comment-note/:userId" element={<MyCommentNotes />} />
     </Routes>
   );
 };

@@ -3,18 +3,29 @@ import pool from "../config/db.js";
 // 创建笔记
 export const createNote = async (req, res) => {
   try {
-    const { userId, title, content, categoryId, tags } = req.body;
+    const { userId, title, content, wordCount, categoryId, tags, isPublic } =
+      req.body;
     const [result] = await pool.query(
-      "INSERT INTO notes (user_id, title, content, category_id, tags) VALUES (?,?,?,?,?)",
-      [userId, title, content, categoryId, JSON.stringify(tags)]
+      "INSERT INTO notes (user_id, title, content, word_count, category_id, tags,is_public) VALUES (?,?,?,?,?,?,?)",
+      [
+        userId,
+        title,
+        content,
+        wordCount,
+        categoryId,
+        JSON.stringify(tags),
+        isPublic,
+      ]
     );
     res.status(201).json({
       id: result.insertId,
       userId,
       title,
       content,
+      wordCount,
       categoryId,
       tags,
+      isPublic,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -25,9 +36,16 @@ export const createNote = async (req, res) => {
 export const getNotes = async (req, res) => {
   try {
     const { userId } = req.params;
-    const [rows] = await pool.query("SELECT * FROM notes WHERE user_id = ?", [
-      userId,
-    ]);
+    const { isDelete } = req.query;
+    let query = "SELECT * FROM notes WHERE user_id = ?";
+    const params = [userId];
+
+    if (isDelete !== undefined) {
+      query += " AND is_delete = ?";
+      params.push(isDelete);
+    }
+
+    const [rows] = await pool.query(query, params);
     res.status(200).json(rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -90,12 +108,12 @@ export const getNote = async (req, res) => {
 export const updateNote = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, content, categoryId, tags } = req.body;
+    const { title, content, wordCount, categoryId, tags } = req.body;
     await pool.query(
-      "UPDATE notes SET title = ?,content = ?,category_id = ?, tags = ? WHERE id = ?",
-      [title, content, categoryId, JSON.stringify(tags), id]
+      "UPDATE notes SET title = ?,content = ?,word_count = ?,category_id = ?, tags = ? WHERE id = ?",
+      [title, content, wordCount, categoryId, JSON.stringify(tags), id]
     );
-    res.status(200).json({ id, title, content, categoryId, tags });
+    res.status(200).json({ id, title, content, wordCount, categoryId, tags });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

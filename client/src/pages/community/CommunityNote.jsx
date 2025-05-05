@@ -40,6 +40,8 @@ import {
   deleteComment,
   updateCommentLike,
 } from '@/api/commentApi';
+import useBrowseHistoryStore from '@/store/userBrowseHistoryStore';
+import NoteWordCount from '@/components/NoteWordCount';
 
 const communityNote = () => {
   const { user } = useStore();
@@ -49,10 +51,11 @@ const communityNote = () => {
   const [catalog, setCatalog] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
   const { Content, Sider } = Layout;
-  const [noteId, setNoteId] = useState();
   const [comments, setComments] = useState([]);
   const [userInfoMap, setUserInfoMap] = useState({});
   const [commentContent, setCommentContent] = useState('');
+
+  const { browseHistory, addToHistory } = useBrowseHistoryStore(user?.id);
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -67,6 +70,10 @@ const communityNote = () => {
         });
         setNote(fetchedNote.data);
         console.log('fetchedNote', fetchedNote.data);
+        // 添加当前笔记到浏览记录
+        if (fetchedNote.data) {
+          addToHistory(fetchedNote.data.id, fetchedNote.data.title, user?.id);
+        }
       } catch (error) {
         console.error('Failed to fetch note details:', error);
         alert('获取笔记详情失败');
@@ -282,6 +289,7 @@ const communityNote = () => {
               onGetCatalog={onGetCatalog}
               className="prose max-w-none"
             />
+            <NoteWordCount content={note.content} />
           </Card>
 
           {/* 评论区域 */}

@@ -1,6 +1,6 @@
 import axiosInstance from './axiosInstance';
 
-// 创建笔记
+// 获取公开的笔记
 export const getPublicNotes = async (page, limit, isPublic) => {
   const params = {
     page,

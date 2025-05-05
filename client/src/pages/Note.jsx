@@ -1,6 +1,21 @@
+// 跟 CommunityNote.jsx 组件一样
 import React, { useState, useEffect } from 'react';
-import { Tag, Layout, Anchor, Button, Avatar, Input, Popconfirm } from 'antd';
+import {
+  Tag,
+  Layout,
+  Anchor,
+  Button,
+  Avatar,
+  Input,
+  Popconfirm,
+  Card,
+  Space,
+  Typography,
+  Divider,
+  Tooltip,
+} from 'antd';
 const { TextArea } = Input;
+const { Text, Title } = Typography;
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -8,9 +23,13 @@ import {
   LikeOutlined,
   DeleteOutlined,
   QuestionCircleOutlined,
+  ClockCircleOutlined,
+  HeartOutlined,
+  StarOutlined,
+  MessageOutlined,
 } from '@ant-design/icons';
 import Navbar from '@/components/Navbar';
-import { getNote } from '@/api/noteApi';
+import { getNote, updateNoteLike, updateNoteCollection } from '@/api/noteApi';
 import { useStore } from '@/store/userStore';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdPreview } from 'md-editor-rt';
@@ -22,6 +41,8 @@ import {
   deleteComment,
   updateCommentLike,
 } from '@/api/commentApi';
+import useBrowseHistoryStore from '@/store/userBrowseHistoryStore';
+import NoteWordCount from '@/components/NoteWordCount';
 
 const Note = () => {
   const { user } = useStore();
@@ -31,10 +52,11 @@ const Note = () => {
   const [catalog, setCatalog] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
   const { Content, Sider } = Layout;
-  const [noteId, setNoteId] = useState();
   const [comments, setComments] = useState([]);
   const [userInfoMap, setUserInfoMap] = useState({});
   const [commentContent, setCommentContent] = useState('');
+
+  const { browseHistory, addToHistory } = useBrowseHistoryStore(user?.id);
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -44,9 +66,15 @@ const Note = () => {
   useEffect(() => {
     const fetchNoteDetails = async () => {
       try {
-        const fetchedNote = await getNote(id);
+        const fetchedNote = await getNote(id, {
+          params: { userId: user?.id },
+        });
         setNote(fetchedNote.data);
         console.log('fetchedNote', fetchedNote.data);
+        // 添加当前笔记到浏览记录
+        if (fetchedNote.data) {
+          addToHistory(fetchedNote.data.id, fetchedNote.data.title, user?.id);
+        }
       } catch (error) {
         console.error('Failed to fetch note details:', error);
         alert('获取笔记详情失败');
@@ -74,7 +102,6 @@ const Note = () => {
       });
       console.log('fetchedComment.data', fetchedComment.data);
       setComments(fetchedComment.data);
-      console.log('comments', comments);
     } catch (error) {
       console.error('Failed to fetch comment:', error);
     }
@@ -144,6 +171,42 @@ const Note = () => {
     }
   }, [comments]);
 
+  // 笔记点赞
+  const handleLikeNote = async (id) => {
+    try {
+      const response = await updateNoteLike(id, user.id);
+      console.log('response', response.data);
+      // 更新本地 note 状态
+      if (note) {
+        setNote({
+          ...note,
+          like_count: response.data.like_count,
+          is_liked: response.data.is_liked,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to update like:', error);
+    }
+  };
+
+  // 笔记收藏
+  const handleCollectNote = async (id) => {
+    try {
+      const response = await updateNoteCollection(id, user.id);
+      console.log('response12121212', response.data);
+      // 更新本地note状态
+      if (note) {
+        setNote({
+          ...note,
+          collection_count: response.data.collection_count,
+          is_collect: response.data.is_collect,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to update like:', error);
+    }
+  };
+
   // 处理点赞/取消点赞
   const handleLikeComment = async (commentId) => {
     try {
@@ -169,136 +232,203 @@ const Note = () => {
   if (!note) return <div>Loading...</div>;
 
   return (
-    <Layout>
+    <Layout className="min-h-screen bg-gray-50">
       <Navbar />
       <Layout>
-        <Content className="p-8 flex-1 h-[100vh] overflow-y-auto">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-3xl">{note.title}</h1>
-            {catalog.length > 0 && (
-              <Button
-                type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => setCollapsed(!collapsed)}
-                className="md:hidden"
-              />
-            )}
-          </div>
-          <div className="mb-4">
-            {note.tags.map((tag) => (
-              <Tag color="cyan" key={tag}>
-                {tag}
-              </Tag>
-            ))}
-          </div>
-          <div className="mt-4">
-            <MdPreview modelValue={note.content} onGetCatalog={onGetCatalog} />
-          </div>
+        <Content className="p-6 md:p-8 lg:p-10 flex-1 overflow-y-auto">
+          <Card className="mb-6 shadow-sm">
+            <Title level={2} className="mb-0">
+              {note.title}
+            </Title>
 
-          <div className="mt-4">
-            <h2 className="text-xl font-bold">评论内容</h2>
-            <TextArea
-              showCount
-              allowClear
-              maxLength={200}
-              onChange={handleCommentChange}
-              placeholder="请输入评论内容"
-              value={commentContent}
+            <div className="flex items-center space-x-4 text-gray-500">
+              <Space>
+                <ClockCircleOutlined />
+                <Text type="secondary">
+                  {new Date(note.created_at).toLocaleString()}
+                </Text>
+              </Space>
+              <Space>
+                <Button
+                  icon={<HeartOutlined />}
+                  type="text"
+                  onClick={() => handleLikeNote(note.id)}
+                  style={{
+                    color: note.is_liked ? '#1890ff' : undefined,
+                  }}
+                >
+                  {note.like_count}
+                </Button>
+              </Space>
+              <Space>
+                <Button
+                  icon={<StarOutlined />}
+                  type="secondary"
+                  onClick={() => handleCollectNote(note.id)}
+                  style={{
+                    color: note.is_collect ? '#1890ff' : undefined,
+                  }}
+                >
+                  {note.collection_count}
+                </Button>
+              </Space>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {note.tags.map((tag) => (
+                <Tag color="cyan" key={tag} className="m-2">
+                  {tag}
+                </Tag>
+              ))}
+            </div>
+          </Card>
+
+          {/* 笔记内容 */}
+          <Card className="mb-6 shadow-sm">
+            <MdPreview
+              modelValue={note.content}
+              onGetCatalog={onGetCatalog}
+              className="prose max-w-none"
             />
-            <Button
-              type="primary"
-              onClick={handlePublishComment}
-              className="mt-2"
-            >
-              发布评论
-            </Button>
-            {comments.length > 0 && (
-              <div className="mt-4">
+            <div className="flex justify-end mt-2">
+              <NoteWordCount content={note.content} />
+            </div>
+          </Card>
+
+          {/* 评论区域 */}
+          <Card
+            title={
+              <>
+                <MessageOutlined /> 评论 ({comments.length})
+              </>
+            }
+            className="shadow-sm"
+          >
+            <div className="space-y-4">
+              <TextArea
+                rows={4}
+                showCount
+                allowClear
+                maxLength={500}
+                onChange={handleCommentChange}
+                placeholder="写下你的评论..."
+                value={commentContent}
+                className="mb-4"
+              />
+              {/* 如果有评论，才可以点击按钮 */}
+              <Button
+                type="primary"
+                onClick={handlePublishComment}
+                disabled={!commentContent.trim()}
+              >
+                发布评论
+              </Button>
+              <Divider className="my-4" />
+
+              <div className="space-y-6">
                 {comments.map((comment) => {
                   const userInfo = userInfoMap[comment.user_id];
-                  const avatarSrc =
-                    userInfo &&
-                    userInfo.avatar_url &&
-                    userInfo.avatar_url.trim() !== ''
-                      ? userInfo.avatar_url
-                      : null;
-                  // 直接使用 comment.is_liked 控制颜色
+                  const avatarSrc = userInfo?.avatar_url?.trim() || null;
+
                   return (
-                    <div key={comment.id} className="border p-4 mb-4">
+                    <div key={comment.id} className="flex space-x-4">
                       <Avatar
                         src={avatarSrc}
-                        icon={!avatarSrc ? <UserOutlined /> : null}
+                        icon={!avatarSrc && <UserOutlined />}
+                        className="flex-shrink-0"
                       />
-                      <span>
-                        {userInfo?.nickname || userInfo?.username || '未知用户'}
-                      </span>
-                      <p>{comment.content}</p>
-                      <div>
-                        {comment.time && (
-                          <span className="text-sm text-gray-500">
-                            {new Date(comment.time).toLocaleString()}
-                          </span>
-                        )}
-                        <Button
-                          type="text"
-                          icon={<LikeOutlined />}
-                          onClick={() => handleLikeComment(comment.id)}
-                          style={{
-                            color: comment.is_liked ? '#1890ff' : undefined,
-                          }}
-                        />
-                        {comment.star_count}
-                        {user.id === comment.user_id && (
-                          <Popconfirm
-                            title="确认删除吗？"
-                            icon={
-                              <QuestionCircleOutlined
-                                style={{ color: 'red' }}
+
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <Text strong>
+                              {userInfo?.nickname ||
+                                userInfo?.username ||
+                                '匿名用户'}
+                            </Text>
+                            <Text type="secondary" className="ml-2 text-xs">
+                              {new Date(comment.time).toLocaleString()}
+                            </Text>
+                          </div>
+
+                          {user.id === comment.user_id && (
+                            <Popconfirm
+                              title="确定要删除这条评论吗？"
+                              icon={
+                                <QuestionCircleOutlined
+                                  style={{ color: 'red' }}
+                                />
+                              }
+                              onConfirm={() => handleDeleteComment(comment.id)}
+                              okText="确定"
+                              cancelText="取消"
+                            >
+                              <Button
+                                type="text"
+                                icon={<DeleteOutlined />}
+                                size="small"
+                                className="text-gray-400 hover:text-gray-600"
                               />
-                            }
-                            onConfirm={() => handleDeleteComment(comment.id)}
-                          >
-                            <Button type="link" icon={<DeleteOutlined />} />
-                          </Popconfirm>
-                        )}
+                            </Popconfirm>
+                          )}
+                        </div>
+
+                        <div className="mt-2 mb-3">
+                          <Text>{comment.content}</Text>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <Tooltip title="点赞">
+                            <Button
+                              type="text"
+                              icon={<LikeOutlined />}
+                              onClick={() => handleLikeComment(comment.id)}
+                              className={`flex items-center ${comment.is_liked ? 'text-blue-500' : 'text-gray-400'}`}
+                            />
+                          </Tooltip>
+                          <Text type="secondary">{comment.star_count}</Text>
+                        </div>
                       </div>
                     </div>
                   );
                 })}
               </div>
-            )}
-          </div>
+            </div>
+          </Card>
         </Content>
 
         {catalog.length > 0 && (
           <Sider
-            width={250}
+            width={280}
             collapsedWidth={0}
             collapsible
             collapsed={collapsed}
             onCollapse={setCollapsed}
             trigger={null}
-            className="bg-white border-l"
+            className="bg-white border-l shadow-sm"
             style={{
-              overflow: 'auto',
-              height: '100vh',
+              height: 'calc(100vh - 64px)',
               position: 'sticky',
-              top: 0,
-              right: 0,
+              top: '64px',
             }}
           >
-            <div className="p-4">
+            <div className="p-4 h-full flex flex-col">
               <div className="flex justify-between items-center mb-2">
-                <h3 className="font-bold">目录</h3>
+                <Title level={4} className="mb-0">
+                  目录
+                </Title>
                 <Button
                   type="text"
                   icon={
                     collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />
                   }
                   onClick={() => setCollapsed(!collapsed)}
+                  className="text-gray-500"
                 />
               </div>
-              <Anchor items={anchorItems} />
+              <div className="flex-1 overflow-y-auto">
+                <Anchor items={anchorItems} className="text-sm" affix={false} />
+              </div>
             </div>
             {collapsed && (
               <Button
