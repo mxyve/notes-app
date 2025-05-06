@@ -18,6 +18,7 @@ export const getLikeNotes = async (req, res) => {
           LEFT JOIN user_note_likes unl
             on n.id = unl.note_id AND unl.user_id = ?
           WHERE 
+            n.is_delete = 0 AND
             CASE
                 WHEN unl.user_id IS NOT NULL THEN 1
                 ELSE 0
@@ -52,6 +53,7 @@ export const getCollectNotes = async (req, res) => {
             LEFT JOIN user_note_collections unc
               on n.id = unc.note_id AND unc.user_id = ?
             WHERE 
+              n.is_delete = 0 AND
               CASE
                   WHEN unc.note_id IS NOT NULL THEN 1
                   ELSE 0
@@ -81,7 +83,9 @@ export const getMyComments = async (req, res) => {
         FROM comments c
         LEFT JOIN user_comment_likes ucl 
           ON c.id = ucl.comment_id AND ucl.user_id = ?
-        WHERE c.user_id = ?
+        LEFT JOIN notes n
+          ON c.note_id = n.id
+        WHERE c.user_id = ? AND n.is_delete = 0
         ORDER BY c.time DESC
       `,
       [userId, userId]

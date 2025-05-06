@@ -7,7 +7,7 @@ export const createNote = async (noteData) => {
 
 // 查询某个用户的所有笔记
 export const getNotes = async (userId, isDelete) => {
-  return axiosInstance.get(`/notes/user/${userId}`, isDelete);
+  return axiosInstance.get(`/notes/user/${userId}`, { params: { isDelete } });
 };
 
 // 获取单个笔记
@@ -16,8 +16,10 @@ export const getNote = async (noteId, config) => {
 };
 
 //查询某个用户某个分类的所有笔记
-export const getNotesByCategory = async (userId, categoryId) => {
-  return axiosInstance.get(`/notes/categories/${userId}/${categoryId}`);
+export const getNotesByCategory = async (userId, categoryId, isDelete) => {
+  return axiosInstance.get(`/notes/categories/${userId}/${categoryId}`, {
+    params: { isDelete },
+  });
 };
 
 // 更新笔记

@@ -3,10 +3,18 @@ import pool from "../config/db.js";
 // 创建笔记
 export const createNote = async (req, res) => {
   try {
-    const { userId, title, content, wordCount, categoryId, tags, isPublic } =
-      req.body;
+    const {
+      userId,
+      title,
+      content,
+      wordCount,
+      categoryId,
+      tags,
+      isPublic,
+      isDelete,
+    } = req.body;
     const [result] = await pool.query(
-      "INSERT INTO notes (user_id, title, content, word_count, category_id, tags,is_public) VALUES (?,?,?,?,?,?,?)",
+      "INSERT INTO notes (user_id, title, content, word_count, category_id, tags, is_public, is_delete) VALUES (?,?,?,?,?,?,?,?)",
       [
         userId,
         title,
@@ -15,6 +23,7 @@ export const createNote = async (req, res) => {
         categoryId,
         JSON.stringify(tags),
         isPublic,
+        isDelete,
       ]
     );
     res.status(201).json({
@@ -26,13 +35,14 @@ export const createNote = async (req, res) => {
       categoryId,
       tags,
       isPublic,
+      isDelete,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// 获取笔记列表
+// 获取笔记列表 查询语句的拼接
 export const getNotes = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -56,17 +66,23 @@ export const getNotes = async (req, res) => {
 export const getNotesByCategory = async (req, res) => {
   try {
     const { userId, categoryId } = req.params;
-    const [rows] = await pool.query(
-      "SELECT * FROM notes WHERE user_id = ? AND category_id = ?",
-      [userId, categoryId]
-    );
+    const { isDelete } = req.query;
+    let query = "SELECT * FROM notes WHERE user_id = ? AND category_id = ?";
+    const params = [userId, categoryId];
+
+    if (isDelete !== undefined) {
+      query += " AND is_delete = ? ";
+      params.push(isDelete);
+    }
+
+    const [rows] = await pool.query(query, params);
     res.status(200).json(rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// 获取单个笔记
+// 获取单个笔记详情
 export const getNote = async (req, res) => {
   try {
     const { id } = req.params;
@@ -108,12 +124,47 @@ export const getNote = async (req, res) => {
 export const updateNote = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, content, wordCount, categoryId, tags } = req.body;
+    // const { isDelete } = req.query;
+    const {
+      title,
+      content,
+      wordCount,
+      categoryId,
+      tags,
+      isPublic,
+      isDelete,
+      deletedAt,
+    } = req.body;
+
+    const validDeletedAt = deletedAt
+      ? new Date(deletedAt).toISOString().slice(0, 19).replace("T", " ")
+      : null;
+
     await pool.query(
-      "UPDATE notes SET title = ?,content = ?,word_count = ?,category_id = ?, tags = ? WHERE id = ?",
-      [title, content, wordCount, categoryId, JSON.stringify(tags), id]
+      "UPDATE notes SET title = ?, content = ?, word_count = ?, category_id = ?, tags = ?, deleted_at = ?, is_public = ?, is_delete = ? WHERE id = ?",
+      [
+        title,
+        content,
+        wordCount,
+        categoryId,
+        JSON.stringify(tags),
+        validDeletedAt,
+        isPublic,
+        isDelete,
+        id,
+      ]
     );
-    res.status(200).json({ id, title, content, wordCount, categoryId, tags });
+    res.status(200).json({
+      id,
+      title,
+      content,
+      wordCount,
+      categoryId,
+      tags,
+      deletedAt: validDeletedAt,
+      isPublic,
+      isDelete,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

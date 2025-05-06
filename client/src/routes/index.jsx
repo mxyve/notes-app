@@ -21,6 +21,7 @@ import CommunityNote from '@/pages/community/CommunityNote';
 import MyLikeNotes from '@/pages/home/MyLikeNotes';
 import MyCollectNotes from '@/pages/home/MyCollectNotes';
 import MyCommentNotes from '@/pages/home/MyCommentNotes';
+import RecycleBin from '@/pages/recyclebin/RecycleBin';
 
 const AppRoutes = () => {
   return (
@@ -46,6 +47,7 @@ const AppRoutes = () => {
       <Route path="/home/like-note/:userId" element={<MyLikeNotes />} />
       <Route path="/home/collect-note/:userId" element={<MyCollectNotes />} />
       <Route path="/home/comment-note/:userId" element={<MyCommentNotes />} />
+      <Route path="/recycleBin" element={<RecycleBin />} />
     </Routes>
   );
 };

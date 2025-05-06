@@ -31,6 +31,7 @@ const CreateNote = () => {
   const [inputTag, setInputTag] = useState('');
   const [wordCount, setWordCount] = useState(0);
   const [isPublic, setIsPublic] = useState(0);
+  const [isDelete, setIsDelete] = useState(0);
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -61,7 +62,9 @@ const CreateNote = () => {
         userId: user.id,
         wordCount: wordCount,
         isPublic: isPublic,
+        isDelete: 0,
       };
+      console.log('即将发送给后端的新笔记数据:', newNoteData);
       await createNote(newNoteData);
       message.success('笔记创建成功');
       // navigate(`/notes/categories/${newNoteData.categoryId}`);

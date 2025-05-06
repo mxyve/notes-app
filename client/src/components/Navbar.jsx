@@ -275,6 +275,7 @@ const Navbar = () => {
                 <span>笔记回收站</span>
               </Space>
             ),
+            onClick: () => navigate('/recycleBin'),
           },
         ]}
       />

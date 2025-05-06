@@ -95,7 +95,11 @@ const Categories = () => {
     // 分类 id 循环
     for (const categoryId of categoryIds) {
       try {
-        const fetchedNotesData = await getNotesByCategory(user.id, categoryId);
+        const fetchedNotesData = await getNotesByCategory(
+          user.id,
+          categoryId,
+          0,
+        );
         console.log('分类' + categoryId + '的笔记', fetchedNotesData.data);
         // 把 分类id, 标题, 更新时间 存到 notes 数组
         const notes = fetchedNotesData.data.map((note) => ({

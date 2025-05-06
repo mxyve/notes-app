@@ -33,6 +33,7 @@ const EditNote = () => {
   const { Title } = Typography;
   const [wordCount, setWordCount] = useState(0);
   const [isPublic, setIsPublic] = useState(0);
+  const [isDelete, setIsDelete] = useState(0);
 
   // 在组件挂载或者 noteId 改变时异步获取笔记数据与分类数据
   useEffect(() => {
@@ -43,11 +44,15 @@ const EditNote = () => {
           getCategories(),
         ]);
         const fetchedNoteData = noteResponse.data;
+        console.log('fetchedNoteData', fetchedNoteData);
         setNoteData(fetchedNoteData);
         setTitle(fetchedNoteData.title);
         setContent(fetchedNoteData.content);
+        setWordCount(fetchedNoteData.word_count);
         setCategoryId(fetchedNoteData.categoryId);
         setTags(fetchedNoteData.tags);
+        setIsPublic(fetchedNoteData.is_public);
+        setIsDelete(fetchedNoteData.is_delete);
         setCategories(categoriesResponse.data);
       } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -72,11 +77,13 @@ const EditNote = () => {
         userId: user.id,
         wordCount: wordCount,
         isPublic: isPublic,
+        isDelete: isDelete,
       };
       // 调用 updateNote 函数，传入笔记 ID 和更新的数据，等待服务器响应
       await updateNote(noteId, updatedNoteData);
+
       message.success('笔记更新成功');
-      navigate('/notes');
+      navigate('/categories');
     } catch (error) {
       console.error('Failed to update note: ', error);
       message.error('更新笔记失败');
@@ -146,7 +153,7 @@ const EditNote = () => {
                 <div className="mb-4 flex items-center">
                   <span className="mr-2">是否公开:</span>
                   <Switch
-                    checked={isPublic === 1}
+                    checked={isPublic}
                     onChange={(checked) => setIsPublic(checked ? 1 : 0)}
                     checkedChildren="公开"
                     unCheckedChildren="私有"
