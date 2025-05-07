@@ -22,6 +22,8 @@ import MyLikeNotes from '@/pages/home/MyLikeNotes';
 import MyCollectNotes from '@/pages/home/MyCollectNotes';
 import MyCommentNotes from '@/pages/home/MyCommentNotes';
 import RecycleBin from '@/pages/recyclebin/RecycleBin';
+import UserSettings from '@/pages/settings/UserSettings';
+import FeedbackSettings from '@/pages/settings/FeedbackSettings';
 
 const AppRoutes = () => {
   return (
@@ -34,7 +36,6 @@ const AppRoutes = () => {
       <Route path="/ai/ocr" element={<AiOcr />} />
       <Route path="/categories" element={<Categories />} />
       <Route path="/notes/categories/:categoryId" element={<CategoryNotes />} />
-      {/* <Route path="/notes" element={<Notes />} /> */}
       <Route path="/notes/:id" element={<Note />} />
       <Route path="/create-note" element={<CreateNote />} />
       <Route path="/notes/edit/:noteId" element={<EditNote />} />
@@ -48,6 +49,8 @@ const AppRoutes = () => {
       <Route path="/home/collect-note/:userId" element={<MyCollectNotes />} />
       <Route path="/home/comment-note/:userId" element={<MyCommentNotes />} />
       <Route path="/recycleBin" element={<RecycleBin />} />
+      <Route path="/settings/UserSettings" element={<UserSettings />} />
+      <Route path="/settings/FeedbackSettings" element={<FeedbackSettings />} />
     </Routes>
   );
 };

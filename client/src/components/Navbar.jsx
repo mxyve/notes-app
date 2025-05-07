@@ -213,17 +213,6 @@ const Navbar = () => {
             ),
             onClick: () => navigate('/categories'),
           },
-          // {
-          //   key: 'notes',
-          //   icon: <FileAddOutlined />,
-          //   label: (
-          //     <Space>
-          //       {/* <FileAddOutlined /> */}
-          //       <span>笔记</span>
-          //     </Space>
-          //   ),
-          //   onClick: () => navigate('/notes'),
-          // },
           {
             key: 'todoList',
             icon: <CarryOutOutlined />,
@@ -267,7 +256,7 @@ const Navbar = () => {
             onClick: () => navigate('/community'),
           },
           {
-            key: '6',
+            key: 'recycleBin',
             icon: <DeleteOutlined />,
             label: (
               <Space>
@@ -276,6 +265,27 @@ const Navbar = () => {
               </Space>
             ),
             onClick: () => navigate('/recycleBin'),
+          },
+          {
+            key: 'settings',
+            icon: <SettingOutlined />,
+            label: (
+              <Space>
+                <span>设置</span>
+              </Space>
+            ),
+            children: [
+              {
+                key: 'user',
+                label: '个人信息',
+                onClick: () => navigate('/settings/UserSettings'),
+              },
+              {
+                key: 'feedback',
+                label: '用户反馈',
+                onClick: () => navigate('/settings/FeedbackSettings'),
+              },
+            ],
           },
         ]}
       />
@@ -295,12 +305,12 @@ const Navbar = () => {
         <FloatButton
           icon={<ScanOutlined />}
           // href=""
-          tooltip={<div>反馈</div>}
+          tooltip={<div>AI问答</div>}
         />
         <FloatButton
           icon={<SettingOutlined />}
           // href=""
-          tooltip={<div>设置</div>}
+          tooltip={<div>图文识别</div>}
         />
       </FloatButton.Group>
       <Button

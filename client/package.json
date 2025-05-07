@@ -30,9 +30,11 @@
     "react-quill-new": "^3.4.6",
     "react-resizable": "^3.0.5",
     "react-router-dom": "^7.4.0",
+    "react-switch-theme": "^0.3.0",
     "react-syntax-highlighter": "^15.6.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
+    "styled-components": "^6.1.17",
     "unocss": "^66.1.0-beta.12",
     "zustand": "^5.0.3"
   },
