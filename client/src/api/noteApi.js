@@ -65,3 +65,21 @@ export const updateNoteCollection = async (id, userId) => {
     userId,
   });
 };
+
+//上传图片
+
+export const uploadImg = async (file, token) => {
+  const formData = new FormData();
+  formData.append('image', file);
+  try {
+    const response = await axios.post('/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

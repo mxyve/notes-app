@@ -6,14 +6,19 @@ const useBrowseHistoryStore = create((set) => ({
   browseHistory: [],
   addToHistory: (noteId, noteTitle, userId) => {
     set((state) => {
+      // 过滤掉已有的相同的 noteId 的记录
+      const filteredHistory = state.browseHistory.filter(
+        (historyItem) => historyItem.noteId !== noteId,
+      );
+      // 添加新记录（确保是最新的）
       const newHistory = [
-        ...state.browseHistory,
+        ...filteredHistory,
         { noteId, noteTitle, timestamp: new Date().getTime(), userId },
-      ];
-      // 确保记录数量不超过十条
-      if (newHistory.length > 10) {
-        newHistory.shift();
-      }
+      ].slice(-10); // 直接截取最后 10 条（替代 if 判断）
+      // // 确保记录数量不超过十条
+      // if (newHistory.length > 10) {
+      //   newHistory.shift();
+      // }
       return { browseHistory: newHistory };
     });
   },

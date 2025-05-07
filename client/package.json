@@ -19,6 +19,8 @@
     "dayjs": "^1.11.13",
     "draft-js": "^0.11.7",
     "global": "^4.4.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.1",
     "lunar-typescript": "^1.8.0",
     "markdown-to-jsx": "^7.7.4",
     "md-editor-rt": "^5.4.5",

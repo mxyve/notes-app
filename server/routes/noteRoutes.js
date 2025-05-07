@@ -11,6 +11,8 @@ import {
   getTags,
   updateNoteLike,
   updateNoteCollection,
+  upload,
+  uploadImg,
 } from "../controllers/noteController.js";
 
 const router = express.Router();
@@ -25,5 +27,6 @@ router.get("/search/:userId", searchNotes);
 router.get("/tags/:userId", getTags);
 router.put("/like/:id", updateNoteLike);
 router.put("/collect/:id", updateNoteCollection);
+router.post("/upload", upload.single("image"), uploadImg);
 
 export default router;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from '@/store/userStore';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
-import { createNote } from '@/api/noteApi'; // 创建笔记
+import { createNote, uploadImg } from '@/api/noteApi'; // 创建笔记
 import { getCategories } from '@/api/categoryApi'; // 所有分类数据
 import {
   Layout,
@@ -32,6 +32,7 @@ const CreateNote = () => {
   const [wordCount, setWordCount] = useState(0);
   const [isPublic, setIsPublic] = useState(0);
   const [isDelete, setIsDelete] = useState(0);
+  const [text, setText] = useState('hello md-editor-rt！');
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -94,6 +95,56 @@ const CreateNote = () => {
     });
   };
 
+  const handleImportMarkdown = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target.result;
+
+      // 尝试解析可能的YAML front matter
+      const yamlRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
+      const match = content.match(yamlRegex);
+
+      if (match) {
+        // 如果有YAML front matter
+        const yamlContent = match[1];
+        const markdownContent = match[2];
+
+        // 这里可以添加YAML解析逻辑（如需要）
+        // 例如解析标题、标签等元数据
+        setContent(markdownContent);
+
+        // 简单示例：从YAML中提取标题
+        const titleMatch = yamlContent.match(/title:\s*["']?(.*?)["']?\n/);
+        if (titleMatch && titleMatch[1]) {
+          setTitle(titleMatch[1].trim());
+        }
+      } else {
+        // 如果没有YAML front matter，直接设置内容
+        setContent(content);
+      }
+    };
+    reader.readAsText(file);
+
+    // 重置input值，以便可以重复选择同一个文件
+    event.target.value = '';
+  };
+
+  // 上传图片
+  // 添加在组件内部
+  const onUploadImg = async (files) => {
+    try {
+      const response = await uploadImg(files[0], user.token);
+      return response.url;
+    } catch (error) {
+      console.error('图片上传失败:', error);
+      message.error('图片上传失败');
+      return '';
+    }
+  };
+
   return (
     <Layout className="flex flex-col min-h-screen">
       <Navbar />
@@ -110,6 +161,23 @@ const CreateNote = () => {
                 />
               </Title>
             </Typography>
+            <div className="flex items-center gap-4 mb-4">
+              <Button
+                type="primary"
+                onClick={() =>
+                  document.getElementById('markdown-import').click()
+                }
+              >
+                导入Markdown文件
+              </Button>
+              <input
+                id="markdown-import"
+                type="file"
+                accept=".md,.markdown"
+                onChange={handleImportMarkdown}
+                style={{ display: 'none' }}
+              />
+            </div>
             {/* 添加一个 flex 容器来横向排列类型和标签部分 */}
             <div className="flex gap-4 mb-4">
               <div className="w-1/3">
@@ -172,8 +240,15 @@ const CreateNote = () => {
                 value={content}
                 onChange={(newContent) => setContent(newContent)}
                 preview="edit" // 设置预览模式
+                showToolbarName // 在工具栏下面显示对应的文字名称
               />
-              <NoteWordCount content={content} onCountChange={setWordCount} />
+              <NoteWordCount
+                modelValue={text}
+                onChange={setText}
+                onUploadImg={onUploadImg}
+                content={content}
+                onCountChange={setWordCount}
+              />
             </div>
           </div>
         </div>
