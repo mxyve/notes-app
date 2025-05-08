@@ -24,6 +24,7 @@ import MyCommentNotes from '@/pages/home/MyCommentNotes';
 import RecycleBin from '@/pages/recyclebin/RecycleBin';
 import UserSettings from '@/pages/settings/UserSettings';
 import FeedbackSettings from '@/pages/settings/FeedbackSettings';
+import PersonalPage from '@/pages/community/PersonalPage';
 
 const AppRoutes = () => {
   return (
@@ -51,6 +52,10 @@ const AppRoutes = () => {
       <Route path="/recycleBin" element={<RecycleBin />} />
       <Route path="/settings/UserSettings" element={<UserSettings />} />
       <Route path="/settings/FeedbackSettings" element={<FeedbackSettings />} />
+      <Route
+        path="/community/PersonalPage/:personalId"
+        element={<PersonalPage />}
+      />
     </Routes>
   );
 };

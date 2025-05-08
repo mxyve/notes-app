@@ -15,10 +15,31 @@ export const createCategory = async (req, res) => {
   }
 };
 
-// 获取分类列表
+// // 获取分类列表
+// export const getCategories = async (req, res) => {
+//   try {
+//     const [rows] = await pool.query("SELECT * FROM categories");
+//     res.status(200).json(rows);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 export const getCategories = async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM categories");
+    const { id } = req.params;
+    const { isDelete } = req.query;
+
+    const [rows] = await pool.query(
+      `SELECT * 
+      FROM categories c
+      LEFT JOIN user_category uc 
+        on c.id = uc.category_id 
+      WHERE uc.user_id = ? AND uc.is_delete = ?
+      `,
+      [id, isDelete]
+    );
+
     res.status(200).json(rows);
   } catch (error) {
     res.status(500).json({ error: error.message });

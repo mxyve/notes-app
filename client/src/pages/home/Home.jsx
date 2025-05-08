@@ -24,6 +24,8 @@ import { useCollectNotesCount } from '@/hooks/useCollectNotesCount';
 import { useCommentNotesCount } from '@/hooks/useCommentNotesCount';
 import MyBrowseHistory from '@/pages/home/MyBrowseHistory';
 import { useNoteWordCount } from '@/hooks/useNoteWordCount';
+import { useLikeCount } from '@/hooks/useLikeCount';
+import { useCollectCount } from '@/hooks/useCollectCount';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -57,6 +59,8 @@ const Home = () => {
   const collecNotesCount = useCollectNotesCount();
   const commentNotesCount = useCommentNotesCount();
   const noteWordCount = useNoteWordCount();
+  const likeCount = useLikeCount();
+  const collectCount = useCollectCount();
 
   return (
     <Layout className="personal-layout">
@@ -126,6 +130,24 @@ const Home = () => {
                 value={noteWordCount}
                 prefix={<FileTextOutlined />}
                 suffix="字"
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={8} lg={6} xl={4}>
+            <Card className="stat-card">
+              <Statistic
+                title="获赞数"
+                value={likeCount}
+                prefix={<FileTextOutlined />}
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={8} lg={6} xl={4}>
+            <Card className="stat-card">
+              <Statistic
+                title="收藏数"
+                value={collectCount}
+                prefix={<FileTextOutlined />}
               />
             </Card>
           </Col>

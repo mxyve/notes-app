@@ -11,3 +11,13 @@ export const getCollectNote = async (userId) => {
 export const getMyComments = async (userId) => {
   return axiosInstance.get(`/home/user/comment/${userId}`);
 };
+
+// 点赞数
+export const getLikeCount = async (userId) => {
+  return axiosInstance.get(`/home/user/likeCount/${userId}`);
+};
+
+// 收藏数
+export const getCollectCount = async (userId) => {
+  return axiosInstance.get(`/home/user/collectionCount/${userId}`);
+};

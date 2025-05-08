@@ -108,7 +108,7 @@ const Community = () => {
                     <List.Item.Meta
                       title={
                         <a
-                          href={`/community/note/${note.id}`}
+                          href={`/notes/${note.id}`}
                           className="text-lg font-medium hover:text-blue-600"
                         >
                           {note.title}

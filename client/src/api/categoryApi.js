@@ -6,8 +6,10 @@ export const createCategory = async (categoryData) => {
 };
 
 // 获取所有分类
-export const getCategories = async () => {
-  return axiosInstance.get('/categories');
+export const getCategories = async (id, isDelete) => {
+  return axiosInstance.get(`/categories/${id}`, {
+    params: { isDelete },
+  });
 };
 
 export const getCategory = async (categoryId) => {

@@ -70,10 +70,12 @@ const Categories = () => {
   // 定义一个异步函数 fetchCategoriesData 用于获取分类数据
   const fetchCategoriesData = async () => {
     try {
-      const fetchedCategories = await getCategories();
+      const fetchedCategories = await getCategories(user.id, 0);
       console.log('Fetched categories:', fetchedCategories.data);
       setCategories(fetchedCategories.data);
-      const ids = fetchedCategories.data.map((category) => category.id);
+      const ids = fetchedCategories.data.map(
+        (category) => category.category_id,
+      );
       console.log('ids:', ids); // [1, 3, 4, 5]
       console.log('length', ids.length);
       setCategoryIds(ids);
@@ -95,11 +97,7 @@ const Categories = () => {
     // 分类 id 循环
     for (const categoryId of categoryIds) {
       try {
-        const fetchedNotesData = await getNotesByCategory(
-          user.id,
-          categoryId,
-          0,
-        );
+        const fetchedNotesData = await getNotesByCategory(user.id, categoryId);
         console.log('分类' + categoryId + '的笔记', fetchedNotesData.data);
         // 把 分类id, 标题, 更新时间 存到 notes 数组
         const notes = fetchedNotesData.data.map((note) => ({
@@ -119,9 +117,10 @@ const Categories = () => {
     setNotesList(allNotes);
   };
   useEffect(() => {
-    fetchNotes();
+    if (categoryIds.length > 0) {
+      fetchNotes();
+    }
   }, [categoryIds, user.id]);
-
   return (
     <Layout>
       <Navbar />
@@ -161,7 +160,7 @@ const Categories = () => {
                 {/* 根据当前分类的id过滤出属于该分类的笔记数据 */}
                 <List
                   dataSource={notesList.filter(
-                    (note) => note.categoryId === item.id,
+                    (note) => note.categoryId === item.category_id,
                   )}
                   renderItem={(note) => (
                     <a href={`/notes/${note.id}`}>

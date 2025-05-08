@@ -360,6 +360,15 @@ const Note = () => {
             <Title level={2} className="mb-0">
               {note.title}
             </Title>
+            <a href={`/community/PersonalPage/${note.user_id}`}>
+              <Avatar
+                src={note.avatar_url || null}
+                icon={!note.avatar_url && <UserOutlined />}
+                size={32}
+              />
+            </a>
+            {note.nickname ? note.nickname : note.username}
+
             <div className="flex items-center space-x-4 text-gray-500">
               {/* 原有按钮 */}
               <Button type="primary" onClick={exportToPDF} className="ml-4">

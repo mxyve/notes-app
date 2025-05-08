@@ -96,3 +96,47 @@ export const getMyComments = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// 获取点赞数
+export const getLikeCount = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // 使用 SUM 函数计算指定用户笔记的点赞总数
+    const [rows] = await pool.query(
+      `SELECT SUM(like_count) as total_likes 
+           FROM notes 
+           WHERE user_id =?`,
+      [userId]
+    );
+
+    // 如果没有匹配的记录，SUM 函数返回 NULL，将其转换为 0
+    const totalLikes = rows[0].total_likes || 0;
+
+    res.status(200).json({ total_likes: totalLikes });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// 获取收藏数
+export const getCollectCount = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // 使用 SUM 函数计算指定用户笔记的点赞总数
+    const [rows] = await pool.query(
+      `SELECT SUM(collection_count) as total_collections 
+           FROM notes 
+           WHERE user_id =?`,
+      [userId]
+    );
+
+    // 如果没有匹配的记录，SUM 函数返回 NULL，将其转换为 0
+    const totalCollections = rows[0].total_collections || 0;
+
+    res.status(200).json({ total_collections: totalCollections });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

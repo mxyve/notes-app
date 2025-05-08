@@ -16,9 +16,14 @@ export const getNote = async (noteId, config) => {
 };
 
 //查询某个用户某个分类的所有笔记
-export const getNotesByCategory = async (userId, categoryId, isDelete) => {
+export const getNotesByCategory = async (
+  userId,
+  categoryId,
+  isPublic,
+  isDelete,
+) => {
   return axiosInstance.get(`/notes/categories/${userId}/${categoryId}`, {
-    params: { isDelete },
+    params: { isPublic, isDelete },
   });
 };
 

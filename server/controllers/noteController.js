@@ -46,9 +46,14 @@ export const createNote = async (req, res) => {
 export const getNotes = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { isDelete } = req.query;
+    const { isDelete, isPublic } = req.query;
     let query = "SELECT * FROM notes WHERE user_id = ?";
     const params = [userId];
+
+    if (isPublic !== undefined) {
+      query += " AND is_public = ? ";
+      params.push(isPublic);
+    }
 
     if (isDelete !== undefined) {
       query += " AND is_delete = ?";
@@ -66,12 +71,23 @@ export const getNotes = async (req, res) => {
 export const getNotesByCategory = async (req, res) => {
   try {
     const { userId, categoryId } = req.params;
-    const { isDelete } = req.query;
-    let query = "SELECT * FROM notes WHERE user_id = ? AND category_id = ?";
+    const { isPublic, isDelete } = req.query;
+
+    let query = `
+    SELECT n.*, c.name
+    FROM notes n
+    LEFT JOIN categories c ON n.category_id = c.id
+    WHERE n.user_id =? AND c.id =?
+    `;
     const params = [userId, categoryId];
 
+    if (isPublic !== undefined) {
+      query += " AND n.is_public =?";
+      params.push(isPublic);
+    }
+
     if (isDelete !== undefined) {
-      query += " AND is_delete = ? ";
+      query += " AND n.is_delete =?";
       params.push(isDelete);
     }
 
@@ -89,9 +105,13 @@ export const getNote = async (req, res) => {
     const { userId } = req.query; // 从查询参数获取当前用户 ID
     // 查找在点赞表里面 note_id 是否等于 notes表的 id，user_id 是否等于登录的用户 id，
     // 如果有则返回 is_liked字段，设置为 1，否则，设置为 0。同理收藏功能
+    // 获取用户信息：头像，昵称
     const [rows] = await pool.query(
       `SELECT 
         n.*,
+        u.username,
+        u.nickname,
+        u.avatar_url,
         CASE
           WHEN unl.user_id IS NOT NULL THEN 1
           ELSE 0
@@ -105,6 +125,8 @@ export const getNote = async (req, res) => {
         on n.id = unl.note_id AND unl.user_id = ?
       LEFT JOIN user_note_collections unc
         ON n.id = unc.note_id AND unc.user_id = ?
+      LEFT JOIN users u
+        ON n.user_id = u.id  
       WHERE n.id = ?
       `,
       [userId, userId, id]
