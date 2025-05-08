@@ -29,3 +29,7 @@ export const deleteTodoList = async (todoListId) => {
 export const getTags = async (userId) => {
   return axiosInstance.get(`/todolist/tags/${userId}`);
 };
+
+export const uploadImage = async (file) => {
+  return axiosInstance.post(`/todolist/upload`, file);
+};

@@ -104,3 +104,21 @@ export const getTags = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+import client from "../config/oss.js";
+export const uploadImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "未上传文件" });
+    }
+
+    const result = await client.put(
+      `images/${Date.now()}-${req.file.originalname}`,
+      req.file.buffer
+    );
+
+    res.status(200).json({ url: result.url });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

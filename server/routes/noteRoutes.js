@@ -1,4 +1,5 @@
 import express from "express";
+import multer from "multer";
 
 import {
   createNote,
@@ -11,11 +12,14 @@ import {
   getTags,
   updateNoteLike,
   updateNoteCollection,
-  upload,
-  uploadImg,
+  // upload,
+  // uploadImg,
+  uploadImage,
 } from "../controllers/noteController.js";
 
 const router = express.Router();
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.post("/", createNote);
 router.get("/user/:userId", getNotes);
@@ -27,6 +31,6 @@ router.get("/search/:userId", searchNotes);
 router.get("/tags/:userId", getTags);
 router.put("/like/:id", updateNoteLike);
 router.put("/collect/:id", updateNoteCollection);
-router.post("/upload", upload.single("image"), uploadImg);
+router.post("/upload", upload.single("image"), uploadImage);
 
 export default router;

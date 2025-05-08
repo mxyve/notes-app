@@ -367,75 +367,93 @@ export const updateNoteCollection = async (req, res) => {
   }
 };
 
-// 图片上传
-import multer from "multer";
-import path from "path";
-import client from "../config/oss.js"; // 确保已配置OSS客户端
-import { v4 as uuidv4 } from "uuid"; // 使用uuid生成更安全的随机文件名
+// // 图片上传
+// import multer from "multer";
+// import path from "path";
+// import client from "../config/oss.js"; // 确保已配置OSS客户端
+// import { v4 as uuidv4 } from "uuid"; // 使用uuid生成更安全的随机文件名
 
-// 配置multer
-export const upload = multer({
-  storage: multer.memoryStorage(),
-  fileFilter: (req, file, cb) => {
-    // 验证文件类型
-    const allowedMimeTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "image/webp",
-    ];
-    if (allowedMimeTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error("仅支持JPEG、PNG、GIF和WebP格式的图片"), false);
-    }
-  },
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 限制5MB
-    files: 1, // 限制单次上传1个文件
-  },
-});
+// // 配置multer
+// export const upload = multer({
+//   storage: multer.memoryStorage(),
+//   fileFilter: (req, file, cb) => {
+//     // 验证文件类型
+//     const allowedMimeTypes = [
+//       "image/jpeg",
+//       "image/png",
+//       "image/gif",
+//       "image/webp",
+//     ];
+//     if (allowedMimeTypes.includes(file.mimetype)) {
+//       cb(null, true);
+//     } else {
+//       cb(new Error("仅支持JPEG、PNG、GIF和WebP格式的图片"), false);
+//     }
+//   },
+//   limits: {
+//     fileSize: 5 * 1024 * 1024, // 限制5MB
+//     files: 1, // 限制单次上传1个文件
+//   },
+// });
 
-// 图片上传控制器
-export const uploadImg = async (req, res) => {
+// // 图片上传控制器
+// export const uploadImg = async (req, res) => {
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({
+//         error: "请上传有效的图片文件",
+//         details: "未收到文件或文件类型不符合要求",
+//       });
+//     }
+
+//     // 生成更安全的文件名
+//     const fileExt = path.extname(req.file.originalname);
+//     const fileName = `images/${uuidv4()}${fileExt}`;
+
+//     // 上传到OSS
+//     const result = await client.put(fileName, req.file.buffer, {
+//       headers: {
+//         "Content-Disposition": "inline",
+//         "Cache-Control": "max-age=31536000", // 1年缓存
+//       },
+//     });
+
+//     // 返回HTTPS URL（如果OSS支持）
+//     const httpsUrl = result.url.replace("http://", "https://");
+
+//     res.json({
+//       url: httpsUrl,
+//       message: "图片上传成功",
+//       fileName: fileName,
+//       size: req.file.size,
+//     });
+//   } catch (error) {
+//     console.error("上传失败:", error);
+
+//     // 更详细的错误响应
+//     const statusCode = error.code === "AccessDeniedError" ? 403 : 500;
+//     res.status(statusCode).json({
+//       error: "图片上传失败",
+//       details: error.message,
+//       code: error.code || "UPLOAD_ERROR",
+//     });
+//   }
+// };
+
+import client from "../config/oss.js";
+export const uploadImage = async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({
-        error: "请上传有效的图片文件",
-        details: "未收到文件或文件类型不符合要求",
-      });
+      return res.status(400).json({ error: "未上传文件" });
     }
 
-    // 生成更安全的文件名
-    const fileExt = path.extname(req.file.originalname);
-    const fileName = `images/${uuidv4()}${fileExt}`;
+    const result = await client.put(
+      `images/${Date.now()}-${req.file.originalname}`,
+      req.file.buffer
+    );
 
-    // 上传到OSS
-    const result = await client.put(fileName, req.file.buffer, {
-      headers: {
-        "Content-Disposition": "inline",
-        "Cache-Control": "max-age=31536000", // 1年缓存
-      },
-    });
-
-    // 返回HTTPS URL（如果OSS支持）
-    const httpsUrl = result.url.replace("http://", "https://");
-
-    res.json({
-      url: httpsUrl,
-      message: "图片上传成功",
-      fileName: fileName,
-      size: req.file.size,
-    });
+    res.status(200).json({ url: result.url });
   } catch (error) {
-    console.error("上传失败:", error);
-
-    // 更详细的错误响应
-    const statusCode = error.code === "AccessDeniedError" ? 403 : 500;
-    res.status(statusCode).json({
-      error: "图片上传失败",
-      details: error.message,
-      code: error.code || "UPLOAD_ERROR",
-    });
+    res.status(500).json({ error: error.message });
   }
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useStore } from '@/store/userStore';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -33,6 +33,7 @@ const CreateNote = () => {
   const [isPublic, setIsPublic] = useState(0);
   const [isDelete, setIsDelete] = useState(0);
   const [text, setText] = useState('hello md-editor-rt！');
+  const quillRef = useRef(null);
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -134,12 +135,52 @@ const CreateNote = () => {
 
   // 上传图片
   // 添加在组件内部
+  // const onUploadImg = async (files) => {
+  //   try {
+  //     const response = await uploadImg(files[0], user.token);
+  //     return response.url;
+  //   } catch (error) {
+  //     console.error('图片上传失败:', error);
+  //     message.error('图片上传失败');
+  //     return '';
+  //   }
+  // };
+  // 图片上传处理函数
+  // const imageHandler = async () => {
+  //   const input = document.createElement('input');
+  //   input.setAttribute('type', 'file');
+  //   input.setAttribute('accept', 'image/*');
+  //   input.click();
+
+  //   input.onchange = async () => {
+  //     const file = input.files[0];
+  //     if (file) {
+  //       try {
+  //         const formData = new FormData();
+  //         formData.append('image', file);
+
+  //         const response = await uploadImage(formData);
+  //         const imageUrl = response.data.url;
+
+  //         const quill = quillRef.current.getEditor();
+  //         const range = quill.getSelection();
+  //         quill.insertEmbed(range.index, 'image', imageUrl);
+  //         quill.setSelection(range.index + 1);
+  //       } catch (error) {
+  //         console.error('图片上传失败:', error);
+  //       }
+  //     }
+  //   };
+  // };
+
   const onUploadImg = async (files) => {
     try {
-      const response = await uploadImg(files[0], user.token);
-      return response.url;
+      const formData = new FormData();
+      formData.append('image', files[0]);
+
+      const response = await uploadImg(formData, user.token);
+      return response.data.url; // 返回图片URL
     } catch (error) {
-      console.error('图片上传失败:', error);
       message.error('图片上传失败');
       return '';
     }
@@ -237,18 +278,13 @@ const CreateNote = () => {
             </div>
             <div>
               <MdEditor
-                value={content}
                 onChange={(newContent) => setContent(newContent)}
                 preview="edit" // 设置预览模式
                 showToolbarName // 在工具栏下面显示对应的文字名称
-              />
-              <NoteWordCount
-                modelValue={text}
-                onChange={setText}
+                // ref={quillRef}
                 onUploadImg={onUploadImg}
-                content={content}
-                onCountChange={setWordCount}
               />
+              <NoteWordCount content={content} onCountChange={setWordCount} />
             </div>
           </div>
         </div>
