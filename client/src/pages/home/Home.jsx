@@ -7,88 +7,104 @@ import {
   Statistic,
   Avatar,
   List,
+  message,
 } from 'antd';
 import Navbar from '@/components/Navbar';
 import { useStore } from '@/store/userStore';
+import { useState, useEffect } from 'react';
 import {
   LikeOutlined,
   StarOutlined,
   MessageOutlined,
-  EyeOutlined,
   FileTextOutlined,
   TeamOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
-import './Home.css'; // 假设我们有一个CSS文件用于额外样式
+import './Home.css';
 import { useLikeNotesCount } from '@/hooks/useLikeNotesCount';
 import { useCollectNotesCount } from '@/hooks/useCollectNotesCount';
 import { useCommentNotesCount } from '@/hooks/useCommentNotesCount';
 import MyBrowseHistory from '@/pages/home/MyBrowseHistory';
 import { useNoteWordCount } from '@/hooks/useNoteWordCount';
-import { useLikeCount } from '@/hooks/useLikeCount';
-import { useCollectCount } from '@/hooks/useCollectCount';
+import { useLikeCount } from '@/hooks/useLikeCount2';
+import { useCollectCount } from '@/hooks/useCollectCount2';
+import { getFollows, getUserFollowers } from '@/api/communityApi';
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
-
-const friends = [
-  {
-    id: 1,
-    name: '张三',
-    avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-  },
-  {
-    id: 2,
-    name: '李四',
-    avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
-  },
-  {
-    id: 3,
-    name: '王五',
-    avatar: 'https://randomuser.me/api/portraits/men/3.jpg',
-  },
-  {
-    id: 4,
-    name: '赵六',
-    avatar: 'https://randomuser.me/api/portraits/women/4.jpg',
-  },
-];
+const { Text } = Typography;
 
 const Home = () => {
   const { user } = useStore();
-  const likeNotesCount = useLikeNotesCount(); // 获取实际点赞数量
+  const likeNotesCount = useLikeNotesCount();
   const collecNotesCount = useCollectNotesCount();
   const commentNotesCount = useCommentNotesCount();
   const noteWordCount = useNoteWordCount();
   const likeCount = useLikeCount();
   const collectCount = useCollectCount();
 
+  // 好友列表状态
+  const [followsData, setFollowsData] = useState([]);
+  const [userfollowersData, setUserfollowersData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // 获取好友列表数据
+  useEffect(() => {
+    const fetchFollowsData = async () => {
+      if (!user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await getFollows(user.id);
+        setFollowsData(response.data || []);
+      } catch (err) {
+        console.error('获取好友列表失败:', err);
+        setError('获取好友列表失败，请稍后重试');
+        message.error('获取好友列表失败');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFollowsData();
+  }, [user?.id]);
+
+  useEffect(() => {
+    const fetchUserFollowersData = async () => {
+      if (!user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await getUserFollowers(user.id);
+        setUserfollowersData(response.data || []);
+      } catch (err) {
+        console.error('获取好友列表失败:', err);
+        setError('获取好友列表失败，请稍后重试');
+        message.error('获取好友列表失败');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserFollowersData();
+  }, [user?.id]);
+
   return (
     <Layout className="personal-layout">
       <Navbar />
       <Content className="personal-content">
-        {/* 用户欢迎区域 */}
-        {/* <div className="welcome-section">
-          {user ? (
-            <>
-              <Avatar
-                size={64}
-                src={
-                  user.avatar || 'https://randomuser.me/api/portraits/men/5.jpg'
-                }
-              />
-              <Title level={2} className="welcome-title">
-                欢迎回来，{user.nickname || user.username}！
-              </Title>
-              <Text type="secondary">今天也是充满灵感的一天</Text>
-            </>
-          ) : (
-            <Title level={2}>欢迎来到笔记应用</Title>
-          )}
-        </div> */}
-        {/* 数据概览卡片 */}
+        {/* 统计卡片行 */}
         <Row gutter={[16, 16]} className="stats-row">
           <Col xs={24} sm={12} md={8} lg={6} xl={4}>
-            <a href={`/home/like-note/${user.id}`}>
+            <a href={`/home/like-note/${user?.id}`}>
               <Card className="stat-card">
                 <Statistic
                   title="我的点赞"
@@ -100,7 +116,7 @@ const Home = () => {
             </a>
           </Col>
           <Col xs={24} sm={12} md={8} lg={6} xl={4}>
-            <a href={`/home/collect-note/${user.id}`}>
+            <a href={`/home/collect-note/${user?.id}`}>
               <Card className="stat-card">
                 <Statistic
                   title="我的收藏"
@@ -112,7 +128,7 @@ const Home = () => {
             </a>
           </Col>
           <Col xs={24} sm={12} md={8} lg={6} xl={4}>
-            <a href={`/home/comment-note/${user.id}`}>
+            <a href={`/home/comment-note/${user?.id}`}>
               <Card className="stat-card">
                 <Statistic
                   title="我的评论"
@@ -138,7 +154,7 @@ const Home = () => {
               <Statistic
                 title="获赞数"
                 value={likeCount}
-                prefix={<FileTextOutlined />}
+                prefix={<LikeOutlined />}
               />
             </Card>
           </Col>
@@ -147,58 +163,103 @@ const Home = () => {
               <Statistic
                 title="收藏数"
                 value={collectCount}
-                prefix={<FileTextOutlined />}
+                prefix={<StarOutlined />}
               />
             </Card>
           </Col>
         </Row>
+
         {/* 最近浏览和好友列表 */}
         <Row gutter={[16, 16]} className="bottom-section">
           <Col xs={24} md={12}>
-            {/* <Card
-              title={
-                <span>
-                  <EyeOutlined /> 最近浏览
-                </span>
-              }
-              className="list-card"
-            > */}
             <MyBrowseHistory />
-            {/* <List
-                itemLayout="horizontal"
-                dataSource={recentViews}
-                renderItem={(item) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      title={<a href="#">{item.title}</a>}
-                      description={`浏览时间: ${item.time}`}
-                    />
-                  </List.Item>
-                )}
-              /> */}
-            {/* </Card> */}
           </Col>
           <Col xs={24} md={12}>
             <Card
               title={
                 <span>
                   <TeamOutlined /> 我的好友
+                  <Text type="secondary" style={{ marginLeft: 8 }}>
+                    {followsData.length}人
+                  </Text>
                 </span>
               }
               className="list-card"
+              loading={loading}
             >
-              <List
-                grid={{ gutter: 16, xs: 2, sm: 3, md: 3, lg: 4, xl: 4 }}
-                dataSource={friends}
-                renderItem={(item) => (
-                  <List.Item>
-                    <div className="friend-item">
-                      <Avatar src={item.avatar} size="large" />
-                      <Text className="friend-name">{item.name}</Text>
-                    </div>
-                  </List.Item>
-                )}
-              />
+              {error ? (
+                <div className="error-message">{error}</div>
+              ) : (
+                <List
+                  grid={{ gutter: 16, xs: 2, sm: 3, md: 3, lg: 4, xl: 4 }}
+                  dataSource={followsData}
+                  renderItem={(user) => (
+                    <List.Item>
+                      <a
+                        href={`/community/PersonalPage/${user.id}`}
+                        className="friend-item"
+                        title={user.signature || '暂无个性签名'}
+                      >
+                        <Avatar
+                          src={user.avatar_url}
+                          size="large"
+                          icon={<UserOutlined />}
+                          className="friend-avatar"
+                        />
+                        <Text className="friend-name" ellipsis>
+                          {user.nickname || user.username}
+                        </Text>
+                      </a>
+                    </List.Item>
+                  )}
+                  locale={{
+                    emptyText: '暂无好友，快去关注一些用户吧！',
+                  }}
+                />
+              )}
+            </Card>
+            <Card
+              title={
+                <span>
+                  <TeamOutlined /> 我的粉丝
+                  <Text type="secondary" style={{ marginLeft: 8 }}>
+                    {userfollowersData.length}人
+                  </Text>
+                </span>
+              }
+              className="list-card"
+              loading={loading}
+            >
+              {error ? (
+                <div className="error-message">{error}</div>
+              ) : (
+                <List
+                  grid={{ gutter: 16, xs: 2, sm: 3, md: 3, lg: 4, xl: 4 }}
+                  dataSource={userfollowersData}
+                  renderItem={(user) => (
+                    <List.Item>
+                      <a
+                        href={`/community/PersonalPage/${user.id}`}
+                        className="friend-item"
+                        title={user.signature || '暂无个性签名'}
+                      >
+                        <Avatar
+                          src={user.avatar_url}
+                          size="large"
+                          icon={<UserOutlined />}
+                          className="friend-avatar"
+                        />
+                        <Text className="friend-name" ellipsis>
+                          {user.nickname || user.username}
+                        </Text>
+                      </a>
+                    </List.Item>
+                  )}
+                  locale={{
+                    emptyText: '暂无好友，快去关注一些用户吧！',
+                  }}
+                />
+              )}
             </Card>
           </Col>
         </Row>

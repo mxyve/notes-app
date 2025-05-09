@@ -71,28 +71,6 @@ export const updateNoteCollection = async (id, userId) => {
   });
 };
 
-//上传图片
-
-// export const uploadImg = async (file, token) => {
-//   const formData = new FormData();
-//   formData.append('image', file);
-//   try {
-//     const response = await axiosInstance.post('/notes/upload', formData, {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-//     return response.data;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
-
-// export const uploadImage = async (file) => {
-//   return axiosInstance.post(`/notes/upload`, file);
-// };
-
 export const uploadImg = async (formData, token) => {
   return axiosInstance.post('/notes/upload', formData, {
     headers: {

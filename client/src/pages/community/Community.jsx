@@ -105,6 +105,24 @@ const Community = () => {
                       )
                     }
                   >
+                    {/* 用户信息显示区域 */}
+                    <div className="flex items-center mb-3">
+                      <a href={`/community/PersonalPage/${note.user_id}`}>
+                        <img
+                          src={
+                            note.avatar_url || 'https://picsum.photos/200/200'
+                          }
+                          alt="用户头像"
+                          className="w-10 h-10 rounded-full mr-3 object-cover"
+                        />
+                      </a>
+                      <div>
+                        <span className="font-medium text-gray-800">
+                          {note.nickname || note.username || '匿名用户'}
+                        </span>
+                      </div>
+                    </div>
+
                     <List.Item.Meta
                       title={
                         <a

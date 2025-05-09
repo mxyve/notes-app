@@ -1,22 +1,21 @@
 import { useState, useEffect } from 'react';
 import { getCollectCount } from '@/api/homeApi';
-import { useParams } from 'react-router-dom';
+import { useStore } from '@/store/userStore';
 
 export const useCollectCount = () => {
   const [count, setCount] = useState(0);
-  const { personalId } = useParams();
+  const { user } = useStore();
 
   useEffect(() => {
     const fetchCollectCount = async () => {
       try {
-        const response = await getCollectCount(personalId);
-        console.log('response=-=-=-=-=-=', response.data);
+        const response = await getCollectCount(user.id);
         setCount(response.data?.total_collections || 0);
       } catch (error) {
         console.error('Failed to fetch like count:', error);
       }
     };
     fetchCollectCount();
-  }, [personalId]);
+  }, [user.id]);
   return count;
 };
