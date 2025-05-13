@@ -5,7 +5,7 @@ import { useStore } from '@/store/userStore';
 export const useCollectCount = () => {
   const [count, setCount] = useState(0);
   const { user } = useStore();
-
+  
   useEffect(() => {
     const fetchCollectCount = async () => {
       try {

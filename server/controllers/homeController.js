@@ -9,12 +9,16 @@ export const getLikeNotes = async (req, res) => {
     // 返回is_like为1的笔记
     const [rows] = await pool.query(
       `SELECT 
-            n.*,
+            n.*, 
+            u.username, 
+            u.nickname, 
+            u.avatar_url,
             CASE
               WHEN unl.user_id IS NOT NULL THEN 1
               ELSE 0
             END AS is_liked
           FROM notes n
+          JOIN users u ON n.user_id = u.id
           LEFT JOIN user_note_likes unl
             on n.id = unl.note_id AND unl.user_id = ?
           WHERE 
@@ -45,11 +49,15 @@ export const getCollectNotes = async (req, res) => {
     const [rows] = await pool.query(
       `SELECT 
               n.*,
+               users.username, 
+               users.nickname, 
+               users.avatar_url, 
               CASE
                 WHEN unc.note_id IS NOT NULL THEN 1
                 ELSE 0
               END AS is_collect
             FROM notes n
+            JOIN users ON n.user_id = users.id
             LEFT JOIN user_note_collections unc
               on n.id = unc.note_id AND unc.user_id = ?
             WHERE 
@@ -79,8 +87,12 @@ export const getMyComments = async (req, res) => {
     const [rows] = await pool.query(
       `SELECT 
           c.*,
+           users.username, 
+           users.nickname, 
+           users.avatar_url, 
           COALESCE(ucl.is_liked, 0) AS is_liked
         FROM comments c
+        JOIN users ON c.user_id = users.id
         LEFT JOIN user_comment_likes ucl 
           ON c.id = ucl.comment_id AND ucl.user_id = ?
         LEFT JOIN notes n

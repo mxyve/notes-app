@@ -222,7 +222,18 @@ const Navbar = () => {
                 <span>待办箱</span>
               </Space>
             ),
-            onClick: () => navigate('/todoList'),
+            children: [
+              {
+                key: 'todoListTagPage',
+                label: '分类标签',
+                onClick: () => navigate('/todoListTagPage'),
+              },
+              {
+                key: 'rililist',
+                label: '日程概览',
+                onClick: () => navigate('/todoList'),
+              },
+            ],
           },
           {
             key: '5',

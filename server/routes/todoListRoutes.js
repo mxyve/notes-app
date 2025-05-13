@@ -9,6 +9,10 @@ import {
   deleteTodoList,
   getTags,
   uploadImage,
+  deleteTags,
+  createTag,
+  // getTodoListsByTag,
+  updateTag,
 } from "../controllers/todoListController.js";
 
 const router = express.Router();
@@ -22,5 +26,9 @@ router.put("/:id", updateTodoList);
 router.delete("/:id", deleteTodoList);
 router.get("/tags/:userId", getTags);
 router.post("/upload", upload.single("image"), uploadImage);
+router.delete("/delete/:tagId", deleteTags);
+router.post("/create/:userId", createTag);
+// router.get("/todolist/:userId", getTodoListsByTag);
+router.put("/updateTag/:id", updateTag);
 
 export default router;

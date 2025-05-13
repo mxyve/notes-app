@@ -173,8 +173,8 @@ const Categories = () => {
                     </a>
                   )}
                 />
-                <a href={`/notes/categories/${item.id}`}>
-                  {item.id}查看分类笔记
+                <a href={`/notes/categories/${item.category_id}`}>
+                  {item.category_id}查看分类笔记
                 </a>
                 <Button
                   type="primary"

@@ -6,8 +6,10 @@ export const createTodoList = async (todoList) => {
 };
 
 // 获取某个用户的所有待办项
-export const getTodoLists = async (userId) => {
-  return axiosInstance.get(`/todolist/user/${userId}`);
+export const getTodoLists = async (userId, tagId, isFinish) => {
+  return axiosInstance.get(`/todolist/user/${userId}`, {
+    params: { tagId, isFinish },
+  });
 };
 
 // 获取单个待办项
@@ -30,6 +32,24 @@ export const getTags = async (userId) => {
   return axiosInstance.get(`/todolist/tags/${userId}`);
 };
 
+// 上传图片
 export const uploadImage = async (file) => {
   return axiosInstance.post(`/todolist/upload`, file);
+};
+
+// 删除标签
+export const deleteTag = async (userId, tagId) => {
+  return axiosInstance.delete(`/todolist/delete/${userId}`, {
+    params: { tagId },
+  });
+};
+
+// 创建标签
+export const createTag = async (userId, tagData) => {
+  return axiosInstance.post(`/todolist/create/${userId}`, tagData);
+};
+
+// 修改标签
+export const updateTag = async (id, tagData) => {
+  return axiosInstance.put(`/todolist/updateTag/${id}`, tagData);
 };

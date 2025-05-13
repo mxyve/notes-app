@@ -129,8 +129,19 @@ const MyLikeNotes = () => {
                     note.tags?.length > 0 && <TagsGroup tags={note.tags} />
                   }
                 >
+                  {/* 新增的用户信息展示部分 */}
+                  <div className="flex items-center mb-3">
+                    <img
+                      src={note.avatar_url || <UserOutlined />}
+                      alt="用户头像"
+                      className="w-8 h-8 rounded-full mr-3 object-cover"
+                    />
+                    <div>
+                      <Text strong>{note.nickname || note.username}</Text>
+                    </div>
+                  </div>
+
                   <List.Item.Meta
-                    avatar={<Avatar icon={<UserOutlined />} />}
                     title={
                       <a
                         href={`/community/note/${note.id}`}

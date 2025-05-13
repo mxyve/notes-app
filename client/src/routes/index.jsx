@@ -25,6 +25,7 @@ import RecycleBin from '@/pages/recyclebin/RecycleBin';
 import UserSettings from '@/pages/settings/UserSettings';
 import FeedbackSettings from '@/pages/settings/FeedbackSettings';
 import PersonalPage from '@/pages/community/PersonalPage';
+import TodoTagPage from '@/pages/todolist/TodoTagPage';
 
 const AppRoutes = () => {
   return (
@@ -56,6 +57,7 @@ const AppRoutes = () => {
         path="/community/PersonalPage/:personalId"
         element={<PersonalPage />}
       />
+      <Route path="/todoListTagPage" element={<TodoTagPage />} />
     </Routes>
   );
 };

@@ -52,7 +52,7 @@ const CategoryNotes = () => {
 
   const fetchNotesByCategory = async () => {
     try {
-      const fetchedNotes = await getNotesByCategory(user.id, categoryId, 0);
+      const fetchedNotes = await getNotesByCategory(user.id, categoryId);
       console.log('Fetched fetchedNotes:', fetchedNotes.data);
       setNotes(fetchedNotes.data);
     } catch (error) {
