@@ -32,7 +32,7 @@ const MyBrowseHistory = () => {
               style={{ padding: '8px 0' }}
             >
               <div className="flex justify-between w-full">
-                <Link to={`/community/note/${record.noteId}`}>
+                <Link to={`/notes/${record.noteId}`}>
                   <Text
                     ellipsis
                     style={{ maxWidth: '200px' }}

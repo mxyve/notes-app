@@ -1,16 +1,160 @@
 import pool from "../config/db.js";
 
+// // 获取评论列表 和 获取回复分开来写的
+// export const getComments = async (req, res) => {
+//   try {
+//     const { noteId } = req.params;
+//     const { userId, page = 1, pageSize = 10 } = req.query; // 从查询参数获取当前用户 ID
+
+//     // 计算 OFFSET
+//     const offset = (page - 1) * pageSize;
+//     // 查询评论，并关联 user_comment_likes 表判断是否点赞，如果点赞is_like字段为1；否则，is_like字段为0
+//     const [rows] = await pool.query(
+//       `SELECT
+//         c.*,
+//         COALESCE(ucl.is_liked, 0) AS is_liked,
+//         u.username, u.nickname, u.avatar_url
+//       FROM comments c
+//       LEFT JOIN user_comment_likes ucl
+//         ON c.id = ucl.comment_id AND ucl.user_id = ?
+//       LEFT JOIN users u
+//         ON u.id = c.user_id
+//       WHERE c.note_id = ? AND c.reply_id = 0
+//       ORDER BY c.time DESC
+//        LIMIT ? OFFSET ?
+//     `,
+//       [userId, noteId, Number(pageSize), Number(offset)]
+//     );
+
+//     // 查询总评论数（用于前端分页计算）
+//     const [totalCount] = await pool.query(
+//       `SELECT COUNT(*) AS total FROM comments
+//        WHERE note_id = ? AND reply_id = 0`,
+//       [noteId]
+//     );
+
+//     res.status(200).json({
+//       data: rows,
+//       pagination: {
+//         page: Number(page),
+//         pageSize: Number(pageSize),
+//         total: totalCount[0].total, // 总评论数
+//       },
+//     });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
+// 获取评论列表（包括一级评论和回复）
+// 获取评论列表（包括所有层级的评论和回复）
+export const getComments = async (req, res) => {
+  try {
+    const { noteId } = req.params;
+    const { userId, page = 1, pageSize = 10 } = req.query;
+    const offset = (page - 1) * pageSize;
+
+    // 1. 查询所有层级的评论（扁平化数据）
+    const [allComments] = await pool.query(
+      `SELECT 
+        c.*,
+        COALESCE(ucl.is_liked, 0) AS is_liked,
+        u.username, u.nickname, u.avatar_url,
+        r.username AS reply_username, r.nickname AS reply_nickname
+      FROM comments c
+      LEFT JOIN (
+        SELECT comment_id, 1 AS is_liked 
+        FROM user_comment_likes 
+        WHERE user_id = ?
+      ) ucl ON c.id = ucl.comment_id
+      LEFT JOIN users u ON u.id = c.user_id
+      LEFT JOIN users r ON r.id = (
+        SELECT user_id FROM comments WHERE id = c.reply_id
+      )
+      WHERE c.note_id = ?
+      ORDER BY c.time ASC`, // 按时间升序排列，最新的评论在最后
+      [userId, noteId]
+    );
+
+    // 2. 查询总评论数（包括所有层级）
+    const [totalCount] = await pool.query(
+      `SELECT COUNT(*) AS total FROM comments 
+       WHERE note_id = ?`,
+      [noteId]
+    );
+
+    // 3. 构建评论树结构（将扁平化数据转换为树形结构）
+    const buildCommentTree = (comments) => {
+      // 创建一个以评论ID为键的映射表，方便快速查找
+      const commentMap = comments.reduce((map, comment) => {
+        map[comment.id] = { ...comment, replies: [] };
+        return map;
+      }, {});
+
+      // 构建树结构
+      const commentTree = [];
+      comments.forEach((comment) => {
+        const node = commentMap[comment.id];
+        if (comment.reply_id === null || comment.reply_id === 0) {
+          // 一级评论
+          commentTree.push(node);
+        } else {
+          // 回复评论
+          const parentId = comment.reply_id;
+          if (commentMap[parentId]) {
+            commentMap[parentId].replies.push(node);
+          } else {
+            // 如果找不到父评论，将其作为一级评论
+            commentTree.push(node);
+          }
+        }
+      });
+
+      // 对一级评论进行分页处理
+      const paginatedComments = commentTree
+        .sort((a, b) => new Date(b.time) - new Date(a.time)) // 按时间降序排列
+        .slice(offset, offset + pageSize);
+
+      return paginatedComments;
+    };
+
+    // 4. 构建树形结构并应用分页
+    const commentsTree = buildCommentTree(allComments);
+
+    res.status(200).json({
+      code: 200,
+      message: "success",
+      data: {
+        comments: commentsTree,
+        pagination: {
+          page: Number(page),
+          pageSize: Number(pageSize),
+          total: totalCount[0].total,
+        },
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      message: error.message,
+      data: null,
+    });
+  }
+};
+
+// 创建评论
 export const createComment = async (req, res) => {
   try {
-    const { userId, noteId, content, time, starCount } = req.body;
+    const { userId, noteId, replyId, content, time, starCount } = req.body;
     const [result] = await pool.query(
-      "INSERT INTO comments (user_id, note_id, content, time, star_count) VALUES (?,?,?,?,?)",
-      [userId, noteId, content, time, starCount]
+      "INSERT INTO comments (user_id, note_id, reply_id, content, time, star_count) VALUES (?,?,?,?,?,?)",
+      [userId, noteId, replyId, content, time, starCount]
     );
     res.status(201).json({
       id: result.insertId,
       userId,
       noteId,
+      replyId,
       content,
       time,
       starCount,
@@ -20,36 +164,14 @@ export const createComment = async (req, res) => {
   }
 };
 
-// 获取评论列表
-export const getComments = async (req, res) => {
-  try {
-    const { noteId } = req.params;
-    const { userId } = req.query; // 从查询参数获取当前用户 ID
-    // 查询评论，并关联 user_comment_likes 表判断是否点赞，如果点赞is_like字段为1；否则，is_like字段为0
-    const [rows] = await pool.query(
-      `SELECT 
-        c.*,
-        COALESCE(ucl.is_liked, 0) AS is_liked
-      FROM comments c
-      LEFT JOIN user_comment_likes ucl 
-        ON c.id = ucl.comment_id AND ucl.user_id = ?
-      WHERE c.note_id = ?
-      ORDER BY c.time DESC
-    `,
-      [userId, noteId]
-    );
-
-    res.status(200).json(rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 // 删除评论
 export const deleteComment = async (req, res) => {
   try {
     const { id } = req.params;
-    await pool.query("DELETE FROM comments WHERE id = ?", [id]);
+    // 先删除回复该评论的所有回复
+    await pool.query("DELETE FROM comments WHERE reply_id =?", [id]);
+    // 再删除该评论
+    await pool.query("DELETE FROM comments WHERE id =?", [id]);
     res.status(200).json({ message: "Comments deleted" });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -115,3 +237,29 @@ export const updateCommentLike = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// // 获取回复的评论
+// export const getReply = async (req, res) => {
+//   try {
+//     const { noteId, id } = req.params;
+//     const { userId } = req.query;
+//     const [rows] = await pool.query(
+//       `SELECT
+//         c.*,
+//         COALESCE(ucl.is_liked, 0) AS is_liked,
+//         u.username, u.nickname, u.avatar_url
+//       FROM comments c
+//       LEFT JOIN user_comment_likes ucl
+//         ON c.id = ucl.comment_id AND ucl.user_id = ?
+//       LEFT JOIN users u
+//         ON u.id = c.user_id
+//       WHERE c.note_id = ? AND c.reply_id = ?
+//       ORDER BY c.time DESC
+//     `,
+//       [userId, noteId, id]
+//     );
+//     res.status(200).json(rows);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };

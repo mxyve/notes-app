@@ -18,3 +18,8 @@ export const updateCommentLike = async (id, userId, noteId) => {
     noteId,
   });
 };
+
+// 获取回复
+export const getReply = async (noteId, id) => {
+  return axiosInstance.get(`/comment/reply/${noteId}/${id}`);
+};

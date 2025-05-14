@@ -235,16 +235,16 @@ const Navbar = () => {
               },
             ],
           },
-          {
-            key: '5',
-            icon: <FormOutlined />,
-            label: (
-              <Space>
-                {/* <FormOutlined /> */}
-                <span>小记</span>
-              </Space>
-            ),
-          },
+          // {
+          //   key: '5',
+          //   icon: <FormOutlined />,
+          //   label: (
+          //     <Space>
+          //       {/* <FormOutlined /> */}
+          //       <span>小记</span>
+          //     </Space>
+          //   ),
+          // },
           {
             key: 'drawing',
             icon: <BgColorsOutlined />,

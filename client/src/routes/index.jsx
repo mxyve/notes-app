@@ -6,7 +6,7 @@ import Home from '@/pages/home/Home';
 import Categories from '@/pages/Categories';
 import CategoryNotes from '@/pages/CategoryNotes';
 import Notes from '@/pages/Notes';
-import Note from '@/pages/Note';
+import Note from '@/pages/note/Note';
 import CreateNote from '@/pages/CreateNote';
 import EditNote from '@/pages/EditNote';
 import Search from '@/pages/Search';

@@ -1,4 +1,4 @@
-// 跟 CommunityNote.jsx 组件一样
+// 未封装组件复用版本
 import React, { useState, useEffect } from 'react';
 import {
   Tag,
@@ -42,6 +42,7 @@ import {
   createComment,
   deleteComment,
   updateCommentLike,
+  getReply,
 } from '@/api/commentApi';
 import useBrowseHistoryStore from '@/store/userBrowseHistoryStore';
 import NoteWordCount from '@/components/NoteWordCount';
@@ -64,6 +65,8 @@ const Note = () => {
 
   const { browseHistory, addToHistory } = useBrowseHistoryStore(user?.id);
   const [isExportingMd, setIsExportingMd] = useState(false);
+  // 新增状态来存储回复评论的评论数据
+  const [replyComments, setReplyComments] = useState({});
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -233,6 +236,21 @@ const Note = () => {
     } catch (error) {
       console.error('Failed to update like:', error);
       alert(error.response?.data?.error || error.message || '操作失败');
+    }
+  };
+
+  // 获取评论
+  const handleReply = async (noteId, id) => {
+    try {
+      const response = await getReply(noteId, id);
+      console.log('Reply data:', response.data);
+      // 将获取到的回复评论的评论数据存储到状态中
+      setReplyComments((prev) => ({
+        ...prev,
+        [id]: response.data,
+      }));
+    } catch (error) {
+      console.error('Failed to update like:', error);
     }
   };
 
@@ -530,6 +548,70 @@ const Note = () => {
                           </Tooltip>
                           <Text type="secondary">{comment.star_count}</Text>
                         </div>
+                        <Button
+                          type="text"
+                          icon={<MessageOutlined />}
+                          onClick={() => handleReply(id, comment.id)}
+                        >
+                          回复
+                        </Button>
+                        {/* 渲染回复评论的评论 */}
+                        {replyComments[comment.id] && (
+                          <div className="mt-4 pl-6">
+                            {replyComments[comment.id].map((reply) => {
+                              const replyUserInfo = userInfoMap[reply.user_id];
+                              const replyAvatarSrc =
+                                replyUserInfo?.avatar_url?.trim() || null;
+
+                              return (
+                                <div key={reply.id} className="flex space-x-4">
+                                  <Avatar
+                                    src={replyAvatarSrc}
+                                    icon={!replyAvatarSrc && <UserOutlined />}
+                                    className="flex-shrink-0"
+                                  />
+                                  <div className="flex-1">
+                                    <div className="flex justify-between items-start">
+                                      <div>
+                                        <Text strong>
+                                          {replyUserInfo?.nickname ||
+                                            replyUserInfo?.username ||
+                                            '匿名用户'}
+                                        </Text>
+                                        <Text
+                                          type="secondary"
+                                          className="ml-2 text-xs"
+                                        >
+                                          {new Date(
+                                            reply.time,
+                                          ).toLocaleString()}
+                                        </Text>
+                                      </div>
+                                    </div>
+                                    <div className="mt-2 mb-3">
+                                      <Text>{reply.content}</Text>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                      <Tooltip title="点赞">
+                                        <Button
+                                          type="text"
+                                          icon={<LikeOutlined />}
+                                          onClick={() => {
+                                            // 处理点赞回复评论的评论的逻辑
+                                          }}
+                                          className={`flex items-center ${reply.is_liked ? 'text-blue-500' : 'text-gray-400'}`}
+                                        />
+                                      </Tooltip>
+                                      <Text type="secondary">
+                                        {reply.star_count}
+                                      </Text>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
