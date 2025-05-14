@@ -4,8 +4,9 @@ import Navbar from '@/components/Navbar';
 import { useStore } from '@/store/userStore';
 import { useNavigate } from 'react-router-dom';
 import { getPictures, deletePicture } from '@/api/pictureApi';
+import GlobalModals from '@/components/GlobalModals';
 
-const DrawingList = () => {
+const DrawingList = ({ children }) => {
   const { Content } = Layout;
   const { user } = useStore();
   const navigate = useNavigate();
@@ -87,6 +88,7 @@ const DrawingList = () => {
           <p>确定删除吗？</p>
         </Modal>
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

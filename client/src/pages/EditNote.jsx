@@ -17,6 +17,7 @@ import Navbar from '@/components/Navbar';
 import { MdEditor } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import NoteWordCount from '@/components/NoteWordCount';
+import GlobalModals from '@/components/GlobalModals';
 
 const EditNote = () => {
   const navigate = useNavigate();
@@ -190,6 +191,7 @@ const EditNote = () => {
           更新笔记
         </Button>
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

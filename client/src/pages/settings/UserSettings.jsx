@@ -14,6 +14,7 @@ import Navbar from '@/components/Navbar';
 import { useStore } from '@/store/userStore';
 import { useState, useEffect } from 'react';
 import { updateUser, getUser, updateUserAvatar } from '@/api/userApi';
+import GlobalModals from '@/components/GlobalModals';
 
 const { Content } = Layout;
 const { Text } = Typography;
@@ -193,6 +194,7 @@ const UserSettings = () => {
           </div>
         </Spin>
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

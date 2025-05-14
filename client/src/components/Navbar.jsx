@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -34,8 +34,10 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/userStore';
 const { Sider } = Layout;
+import { ModalContext } from '@/context/ModalContext';
 
 const Navbar = () => {
+  const { setChatModalVisible, setOcrModalVisible } = useContext(ModalContext);
   const navigate = useNavigate();
   const { user, logout } = useStore();
   // 从 localStorage 中获取 collapsed 状态，如果没有则默认为 false
@@ -181,28 +183,6 @@ const Navbar = () => {
             onClick: () => navigate('/'),
           },
           {
-            key: 'AI',
-            icon: <RobotOutlined />,
-            label: (
-              <Space>
-                {/* <VideoCameraOutlined /> */}
-                <span>AI助手</span>
-              </Space>
-            ),
-            children: [
-              {
-                key: 'chat',
-                label: 'AI问答',
-                onClick: () => navigate('/ai/chat'),
-              },
-              {
-                key: 'ocr',
-                label: '图文识别',
-                onClick: () => navigate('/ai/ocr'),
-              },
-            ],
-          },
-          {
             key: 'categories',
             icon: <BookOutlined />,
             label: (
@@ -235,16 +215,6 @@ const Navbar = () => {
               },
             ],
           },
-          // {
-          //   key: '5',
-          //   icon: <FormOutlined />,
-          //   label: (
-          //     <Space>
-          //       {/* <FormOutlined /> */}
-          //       <span>小记</span>
-          //     </Space>
-          //   ),
-          // },
           {
             key: 'drawing',
             icon: <BgColorsOutlined />,
@@ -314,14 +284,16 @@ const Navbar = () => {
         }}
       >
         <FloatButton
-          icon={<ScanOutlined />}
+          // icon={<ScanOutlined />}
           // href=""
           tooltip={<div>AI问答</div>}
+          onClick={() => setChatModalVisible(true)}
         />
         <FloatButton
-          icon={<SettingOutlined />}
+          // icon={<SettingOutlined />}
           // href=""
           tooltip={<div>图文识别</div>}
+          onClick={() => setOcrModalVisible(true)}
         />
       </FloatButton.Group>
       <Button

@@ -1,38 +1,34 @@
 import { useState } from 'react';
 import Navbar from '@/components/Navbar';
-import { Layout, Spin, Button } from 'antd';
+import { Layout, Button, Input } from 'antd';
 import { ocr } from '@/api/aiApi';
+import DraggableModal from './DraggableModal';
 
 const OCR = () => {
   const { Content } = Layout;
-  const [file, setFile] = useState(null); // 存储用户选择的文件
-  const [result, setResult] = useState(''); // 存储 OCR 识别结果
-  const [error, setError] = useState(''); // 存储错误信息
+  const [file, setFile] = useState(null);
+  const [result, setResult] = useState('');
+  const [error, setError] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [loading, setLoading] = useState(false); // 控制加载状态
+  const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // 处理文件选择
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
-      setError(''); // 清除之前的错误信息
-      // 图片预览 URL
-      const url = URL.createObjectURL(selectedFile);
-      console.log('url:', url);
-      setImageUrl(url);
+      setError('');
+      setImageUrl(URL.createObjectURL(selectedFile));
     }
   };
 
-  // 处理 OCR 识别
   const handleOCR = async () => {
     if (!file) {
       setError('请先选择一个图片文件');
       return;
     }
     try {
-      setLoading(true); // 开始加载动画
-      // 调用 OCR 函数
+      setLoading(true);
       const resultText = await ocr(file);
       setResult(resultText);
       setError('');
@@ -40,38 +36,74 @@ const OCR = () => {
       console.error('OCR 识别失败:', error);
       setError('OCR 识别失败，请稍后再试');
     } finally {
-      setLoading(false); // 结束加载动画
+      setLoading(false);
     }
+  };
+
+  const showOCRModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setFile(null);
+    setImageUrl('');
+    setResult('');
   };
 
   return (
     <Layout>
-      <Navbar />
-      <Content>
-        <div className="container">
-          <h1>OCR 传图识字</h1>
-          <input
-            type="file"
-            id="imageInput"
-            accept="image/jpeg, image/png, image/webp"
-            onChange={handleFileChange}
-          />
-          <Button onClick={handleOCR} disabled={!file} loading={loading}>
-            识别图片文字
-          </Button>
-          {error && <div className="error">{error}</div>}
-          {result && <div className="result">{result}</div>}
+      <Navbar showOCRModal={showOCRModal} />
+      <Content style={{ padding: '24px' }}>
+        <h1>OCR 传图识字</h1>
+        <Button type="primary" onClick={showOCRModal}>
+          打开OCR识别对话框
+        </Button>
+
+        <DraggableModal
+          title="OCR图片文字识别"
+          open={isModalVisible}
+          onCancel={handleCancel}
+          onSubmit={handleOCR}
+          loading={loading}
+          submitText="识别文字"
+          width={900}
+        >
+          <div style={{ marginBottom: 16 }}>
+            <input
+              type="file"
+              id="imageInput"
+              accept="image/jpeg, image/png, image/webp"
+              onChange={handleFileChange}
+            />
+          </div>
+
+          {error && (
+            <div style={{ color: 'red', marginBottom: 16 }}>{error}</div>
+          )}
+
           {imageUrl && (
-            <div>
+            <div style={{ marginBottom: 16 }}>
               <h3>图片预览：</h3>
               <img
                 src={imageUrl}
                 alt="Preview"
-                style={{ maxWidth: '30%', height: 'auto' }}
+                style={{ maxWidth: '100%', height: 'auto', maxHeight: '300px' }}
               />
             </div>
           )}
-        </div>
+
+          {result && (
+            <div style={{ marginTop: 16 }}>
+              <h3>识别结果：</h3>
+              <Input.TextArea
+                value={result}
+                autoSize={{ minRows: 4, maxRows: 8 }}
+                readOnly
+              />
+            </div>
+          )}
+        </DraggableModal>
       </Content>
     </Layout>
   );

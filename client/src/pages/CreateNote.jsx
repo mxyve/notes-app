@@ -17,6 +17,7 @@ import {
 import { MdEditor } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import NoteWordCount from '@/components/NoteWordCount';
+import GlobalModals from '@/components/GlobalModals';
 
 const CreateNote = () => {
   const navigate = useNavigate();
@@ -292,6 +293,7 @@ const CreateNote = () => {
           添加笔记
         </Button>
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

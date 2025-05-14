@@ -6,6 +6,7 @@ import { getNotes, deleteNote } from '@/api/noteApi';
 import { useStore } from '@/store/userStore';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import GlobalModals from '@/components/GlobalModals';
 
 const Notes = () => {
   const navigate = useNavigate();
@@ -104,6 +105,7 @@ const Notes = () => {
           <p>确定删除这条笔记吗？ 此操作不可恢复。</p>
         </Modal>
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

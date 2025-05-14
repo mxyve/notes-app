@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { Layout } from 'antd';
 import { getPicture } from '@/api/pictureApi';
+import GlobalModals from '@/components/GlobalModals';
 
-const DrawingDetail = () => {
+const DrawingDetail = ({ children }) => {
   const { Content } = Layout;
   const { id } = useParams();
   const [picture, setPicture] = useState(null);
@@ -36,6 +37,7 @@ const DrawingDetail = () => {
           />
         )}
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

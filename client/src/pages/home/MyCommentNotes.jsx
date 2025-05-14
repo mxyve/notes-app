@@ -21,6 +21,7 @@ import { getMyComments } from '@/api/homeApi';
 import { useStore } from '@/store/userStore';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import GlobalModals from '@/components/GlobalModals';
 
 dayjs.extend(relativeTime);
 
@@ -43,7 +44,7 @@ const LikeStatus = ({ isLiked, starCount }) => (
   </Space>
 );
 
-const MyCommentNotes = () => {
+const MyCommentNotes = ({ children }) => {
   const { user } = useStore();
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -130,6 +131,7 @@ const MyCommentNotes = () => {
           </Card>
         )}
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

@@ -38,6 +38,7 @@ import NoteWordCount from '@/components/NoteWordCount';
 import Export from './Export';
 import Catalog from './Catalog';
 import Comments from './Comments';
+import GlobalModals from '@/components/GlobalModals';
 
 const Note = () => {
   const { user } = useStore();
@@ -209,6 +210,7 @@ const Note = () => {
         {/* 侧边栏目录 */}
         {catalog.length > 0 && <Catalog catalog={catalog} />}
       </Layout>
+      <GlobalModals />
     </Layout>
   );
 };

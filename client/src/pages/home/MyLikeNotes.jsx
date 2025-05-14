@@ -16,6 +16,7 @@ import { getLikeNote } from '@/api/homeApi';
 import { useStore } from '@/store/userStore';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
+import GlobalModals from '@/components/GlobalModals';
 
 import {
   LikeOutlined,
@@ -60,7 +61,7 @@ const NoteStats = ({ likeCount, collectCount }) => (
   </Space>
 );
 
-const MyLikeNotes = () => {
+const MyLikeNotes = ({ children }) => {
   const { user } = useStore();
   const { id } = useParams();
   const [notes, setNotes] = useState([]);
@@ -168,6 +169,7 @@ const MyLikeNotes = () => {
           </Card>
         )}
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

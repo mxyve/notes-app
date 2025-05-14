@@ -4,6 +4,7 @@ import { getNotesByCategory, updateNote } from '@/api/noteApi';
 import { useStore } from '@/store/userStore';
 import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import GlobalModals from '@/components/GlobalModals';
 
 // 封装笔记项组件
 const NoteItem = ({ item, onDelete }) => {
@@ -35,7 +36,7 @@ const NoteItem = ({ item, onDelete }) => {
   );
 };
 
-const CategoryNotes = () => {
+const CategoryNotes = ({ children }) => {
   const { user } = useStore();
   const navigate = useNavigate();
   const { categoryId } = useParams();
@@ -150,6 +151,7 @@ const CategoryNotes = () => {
           <p>确定将这条笔记放入回收站吗？ 此操作可在回收站中找回，保留30天。</p>
         </Modal>
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

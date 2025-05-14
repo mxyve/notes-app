@@ -17,6 +17,7 @@ import {
 } from '@ant-design/icons';
 import { getPublicNotes } from '@/api/communityApi';
 import dayjs from 'dayjs';
+import GlobalModals from '@/components/GlobalModals';
 
 const { Content } = Layout;
 
@@ -155,6 +156,7 @@ const Community = () => {
           )}
         </Card>
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

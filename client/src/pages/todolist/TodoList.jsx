@@ -6,6 +6,7 @@ import { getTodoLists, createTodoList } from '@/api/todoListApi';
 import { useStore } from '@/store/userStore';
 import TodoListManager from '@/components/TodoListManage';
 import './Todolist.css';
+import GlobalModals from '@/components/GlobalModals';
 
 // 按日期分组待办事项,同时考虑年、月、日
 const groupTodoListByDate = (todoList) => {
@@ -52,7 +53,7 @@ const getMonthData = (value) => {
   }
 };
 
-const TodoList = () => {
+const TodoList = ({ children }) => {
   const { Content } = Layout;
   const [todoList, setTodoList] = useState([]);
   const [groupedTodoList, setGroupedTodoList] = useState({});
@@ -204,6 +205,7 @@ const TodoList = () => {
           onDrawerClose={() => setSelectedTodoId(null)} // 回调，重置为null，这点点击同一个就可以变化值了
         />
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

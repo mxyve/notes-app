@@ -4,9 +4,9 @@ import { Layout, Button, Input, Slider, message } from 'antd';
 import Navbar from '@/components/Navbar';
 import { createPicture } from '@/api/pictureApi';
 import { useStore } from '@/store/userStore';
-// import axios from 'axios';
+import GlobalModals from '@/components/GlobalModals';
 
-const CanvasComponent = () => {
+const CanvasComponent = ({ children }) => {
   const { Content } = Layout;
   const canvasRef = useRef(null);
   const [canvasContext, setCanvasContext] = useState(null);
@@ -623,6 +623,7 @@ const CanvasComponent = () => {
           style={{ background: '#FFF', position: 'absolute', zIndex: 0 }}
         />
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

@@ -12,8 +12,9 @@ import { useStore } from '@/store/userStore';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import dayjs from 'dayjs';
+import GlobalModals from '@/components/GlobalModals';
 
-const Categories = () => {
+const Categories = ({ children }) => {
   const { user } = useStore();
   const navigate = useNavigate();
   const { Content } = Layout;
@@ -217,6 +218,7 @@ const Categories = () => {
           </Modal>
         </div>
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

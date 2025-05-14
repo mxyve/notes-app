@@ -23,6 +23,7 @@ import { useCollectCount } from '@/hooks/useCollectCount';
 import { updateFollows, getFollowStatus } from '@/api/communityApi';
 import { useStore } from '@/store/userStore';
 import { useFollowersCount } from '@/hooks/useFollowersCount';
+import GlobalModals from '@/components/GlobalModals';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -271,6 +272,7 @@ const PersonalPage = () => {
           )}
         />
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

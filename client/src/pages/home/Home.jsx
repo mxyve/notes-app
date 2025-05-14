@@ -29,11 +29,12 @@ import { useNoteWordCount } from '@/hooks/useNoteWordCount';
 import { useLikeCount } from '@/hooks/useLikeCount2';
 import { useCollectCount } from '@/hooks/useCollectCount2';
 import { getFollows, getUserFollowers } from '@/api/communityApi';
+import GlobalModals from '@/components/GlobalModals';
 
 const { Content } = Layout;
 const { Text } = Typography;
 
-const Home = () => {
+const Home = ({ children }) => {
   const { user } = useStore();
   const likeNotesCount = useLikeNotesCount();
   const collecNotesCount = useCollectNotesCount();
@@ -263,7 +264,9 @@ const Home = () => {
             </Card>
           </Col>
         </Row>
+        {children}
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

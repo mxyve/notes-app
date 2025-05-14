@@ -13,6 +13,7 @@ import Navbar from '@/components/Navbar';
 import { useStore } from '@/store/userStore';
 import { getNotes, deleteNote, updateNote } from '@/api/noteApi';
 import dayjs from 'dayjs';
+import GlobalModals from '@/components/GlobalModals';
 
 const { Content } = Layout;
 const { Text, Title } = Typography;
@@ -194,6 +195,7 @@ const RecycleBin = () => {
           </Modal>
         </div>
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };

@@ -30,8 +30,9 @@ import {
 import { useStore } from '@/store/userStore';
 import TodoListManager from '@/components/TodoListManage';
 import './Todolist.css';
+import GlobalModals from '@/components/GlobalModals';
 
-const TodoList = () => {
+const TodoList = ({ children }) => {
   const { Content } = Layout;
   const { Option } = Select;
   const [todoList, setTodoList] = useState([]);
@@ -474,6 +475,7 @@ const TodoList = () => {
           )}
         </Modal>
       </Content>
+      <GlobalModals />
     </Layout>
   );
 };
