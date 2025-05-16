@@ -1,3 +1,4 @@
+// 富文本
 import React, { useRef } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
@@ -45,8 +46,7 @@ const RichTextEditor = ({ value, onChange }) => {
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
         [{ color: [] }, { background: [] }],
         [{ align: [] }],
-        ['clean'],
-        ['image', 'video'],
+        ['image'],
       ],
       handlers: {
         image: imageHandler, // 覆盖默认的图片处理

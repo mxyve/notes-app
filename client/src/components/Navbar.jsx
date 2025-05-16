@@ -261,11 +261,11 @@ const Navbar = () => {
                 label: '个人信息',
                 onClick: () => navigate('/settings/UserSettings'),
               },
-              {
-                key: 'feedback',
-                label: '用户反馈',
-                onClick: () => navigate('/settings/FeedbackSettings'),
-              },
+              // {
+              //   key: 'feedback',
+              //   label: '用户反馈',
+              //   onClick: () => navigate('/settings/FeedbackSettings'),
+              // },
             ],
           },
         ]}

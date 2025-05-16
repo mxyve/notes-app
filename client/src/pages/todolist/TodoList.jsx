@@ -4,7 +4,7 @@ import { Layout, Badge, Calendar, Input, message } from 'antd';
 import Navbar from '@/components/Navbar';
 import { getTodoLists, createTodoList } from '@/api/todoListApi';
 import { useStore } from '@/store/userStore';
-import TodoListManager from '@/components/TodoListManage';
+import TodoListManager from './components/TodoListManage';
 import './Todolist.css';
 import GlobalModals from '@/components/GlobalModals';
 
@@ -69,8 +69,8 @@ const TodoList = ({ children }) => {
     const num = getMonthData(value);
     return num ? (
       <div className="notes-month">
-        <section>{num}</section>
-        <span>Backlog number</span>
+        {/* <section>{num}</section> */}
+        {/* <span>Backlog number</span> */}
       </div>
     ) : null;
   };

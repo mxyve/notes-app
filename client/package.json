@@ -24,6 +24,8 @@
     "lunar-typescript": "^1.8.0",
     "markdown-to-jsx": "^7.7.4",
     "md-editor-rt": "^5.4.5",
+    "quill-image-resize": "^3.0.9",
+    "quill-image-resize-module": "^3.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-draggable": "^4.4.6",

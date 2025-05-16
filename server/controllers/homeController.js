@@ -4,7 +4,7 @@ import pool from "../config/db.js";
 export const getLikeNotes = async (req, res) => {
   try {
     const { userId } = req.params;
-    // 查找在点赞表里面 note_id 是否等于 notes表的 id，user_id 是否等于登录的用户 id，
+    // 查找在点赞表里面 note_id 是否等于 notes 表的 id，user_id 是否等于登录的用户 id，
     // 如果有则返回 is_liked字段，设置为 1，否则，设置为 0。
     // 返回is_like为1的笔记
     const [rows] = await pool.query(
@@ -31,7 +31,7 @@ export const getLikeNotes = async (req, res) => {
       [userId]
     );
     // const [rows] = await pool.query("SELECT * FROM notes WHERE id = ?", [id]);
-    if (rows.length > 0) {
+    if (rows.length >= 0) {
       // 返回所有点赞的笔记列表，你应该直接返回 rows 数组，而非 rows[0]。
       res.status(200).json(rows);
     } else {
@@ -69,7 +69,7 @@ export const getCollectNotes = async (req, res) => {
             `,
       [userId]
     );
-    if (rows.length > 0) {
+    if (rows.length >= 0) {
       res.status(200).json(rows);
     } else {
       res.status(404).json({ error: "Note not found" });
@@ -87,6 +87,7 @@ export const getMyComments = async (req, res) => {
     const [rows] = await pool.query(
       `SELECT 
           c.*,
+           n.title,
            users.username, 
            users.nickname, 
            users.avatar_url, 

@@ -1,29 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, forwardRef } from 'react';
 import {
   Tag,
   Layout,
   Button,
   Avatar,
-  Input,
-  Popconfirm,
   Card,
   Space,
   Typography,
-  Divider,
-  Tooltip,
+  FloatButton,
 } from 'antd';
-const { TextArea } = Input;
 const { Text, Title } = Typography;
-const { Header, Content, Footer, Sider } = Layout;
+const { Content } = Layout;
 import {
   UserOutlined,
-  LikeOutlined,
-  DeleteOutlined,
-  QuestionCircleOutlined,
   ClockCircleOutlined,
   HeartOutlined,
   StarOutlined,
-  MessageOutlined,
+  CommentOutlined,
+  VerticalAlignTopOutlined,
 } from '@ant-design/icons';
 import Navbar from '@/components/Navbar';
 import { getNote, updateNoteLike, updateNoteCollection } from '@/api/noteApi';
@@ -31,14 +25,21 @@ import { useStore } from '@/store/userStore';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdPreview } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
-import { getComments } from '@/api/commentApi';
-import { getUser } from '@/api/userApi';
 import useBrowseHistoryStore from '@/store/userBrowseHistoryStore';
 import NoteWordCount from '@/components/NoteWordCount';
-import Export from './Export';
-import Catalog from './Catalog';
-import Comments from './Comments';
+import Export from './noteComponents/Export';
+import Catalog from './noteComponents/Catalog';
+import Comments from './noteComponents/Comments';
 import GlobalModals from '@/components/GlobalModals';
+
+// 修改 Comments 组件引用方式，使用 forwardRef
+const CommentsWithRef = forwardRef((props, ref) => {
+  return (
+    <div ref={ref}>
+      <Comments {...props} />
+    </div>
+  );
+});
 
 const Note = () => {
   const { user } = useStore();
@@ -48,7 +49,8 @@ const Note = () => {
   const [catalog, setCatalog] = useState([]);
   const [comments, setComments] = useState([]);
 
-  const { browseHistory, addToHistory } = useBrowseHistoryStore(user?.id);
+  const { addToHistory } = useBrowseHistoryStore(user?.id);
+  const commentsRef = useRef(null);
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -199,18 +201,54 @@ const Note = () => {
             </div>
           </Card>
 
-          {/* 评论区域 */}
-          <Comments
+          {/* 评论区域，添加了 id 属性 */}
+          <CommentsWithRef
+            ref={commentsRef}
             noteId={id}
             user={user}
             comments={comments}
             setComments={setComments}
+            id="comments-section"
           />
         </Content>
         {/* 侧边栏目录 */}
         {catalog.length > 0 && <Catalog catalog={catalog} />}
       </Layout>
       <GlobalModals />
+
+      <FloatButton.Group shape="circle" style={{ right: 24, bottom: 100 }}>
+        {/* 置顶按钮 */}
+        <FloatButton
+          icon={<VerticalAlignTopOutlined />}
+          onClick={() => {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth',
+            });
+          }}
+        />
+
+        {/* 评论按钮 */}
+        <FloatButton
+          icon={<CommentOutlined />}
+          type="primary"
+          onClick={() => {
+            if (commentsRef.current) {
+              const element = commentsRef.current;
+              const offset = 80;
+              const bodyRect = document.body.getBoundingClientRect().top;
+              const elementRect = element.getBoundingClientRect().top;
+              const elementPosition = elementRect - bodyRect;
+              const offsetPosition = elementPosition - offset;
+
+              window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth',
+              });
+            }
+          }}
+        />
+      </FloatButton.Group>
     </Layout>
   );
 };

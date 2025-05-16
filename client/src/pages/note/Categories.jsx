@@ -1,5 +1,4 @@
 // 分类列表
-
 import React, { useState, useEffect } from 'react';
 import { List, Card, Layout, Button, Modal, Input, message } from 'antd';
 import {
@@ -14,7 +13,7 @@ import Navbar from '@/components/Navbar';
 import dayjs from 'dayjs';
 import GlobalModals from '@/components/GlobalModals';
 
-const Categories = ({ children }) => {
+const Categories = () => {
   const { user } = useStore();
   const navigate = useNavigate();
   const { Content } = Layout;
@@ -49,7 +48,7 @@ const Categories = ({ children }) => {
     try {
       // 改为对象形式
       const newCategoryData = { name };
-      const fetchedCategory = await createCategory(newCategoryData); // 获取返回值
+      const fetchedCategory = await createCategory(user.id, newCategoryData); // 获取返回值
       // 更新分类列表
       setCategories((prevCategories) => [...prevCategories, fetchedCategory]);
       // 更新 categoryIds
@@ -67,16 +66,13 @@ const Categories = ({ children }) => {
   };
 
   // 获取所有分类
-
   // 定义一个异步函数 fetchCategoriesData 用于获取分类数据
   const fetchCategoriesData = async () => {
     try {
-      const fetchedCategories = await getCategories(user.id, 0);
+      const fetchedCategories = await getCategories(user.id);
       console.log('Fetched categories:', fetchedCategories.data);
       setCategories(fetchedCategories.data);
-      const ids = fetchedCategories.data.map(
-        (category) => category.category_id,
-      );
+      const ids = fetchedCategories.data.map((category) => category.id);
       console.log('ids:', ids); // [1, 3, 4, 5]
       console.log('length', ids.length);
       setCategoryIds(ids);
@@ -161,7 +157,7 @@ const Categories = ({ children }) => {
                 {/* 根据当前分类的id过滤出属于该分类的笔记数据 */}
                 <List
                   dataSource={notesList.filter(
-                    (note) => note.categoryId === item.category_id,
+                    (note) => note.categoryId === item.id,
                   )}
                   renderItem={(note) => (
                     <a href={`/notes/${note.id}`}>
@@ -174,18 +170,19 @@ const Categories = ({ children }) => {
                     </a>
                   )}
                 />
-                <a href={`/notes/categories/${item.category_id}`}>
-                  {item.category_id}查看分类笔记
-                </a>
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    setModalVisible(true);
-                    setSelectedCategoryId(item.id);
-                  }}
-                >
-                  删除
-                </Button>
+                <a href={`/notes/categories/${item.id}`}>查看分类笔记</a>
+                <div className="absolute bottom-2 right-2">
+                  <Button
+                    type="primary"
+                    danger
+                    onClick={() => {
+                      setModalVisible(true);
+                      setSelectedCategoryId(item.id);
+                    }}
+                  >
+                    删除
+                  </Button>
+                </div>
               </Card>
             )}
           />

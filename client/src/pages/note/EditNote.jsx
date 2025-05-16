@@ -42,7 +42,7 @@ const EditNote = () => {
       try {
         const [noteResponse, categoriesResponse] = await Promise.all([
           getNote(noteId),
-          getCategories(),
+          getCategories(user.id),
         ]);
         const fetchedNoteData = noteResponse.data;
         console.log('fetchedNoteData', fetchedNoteData);

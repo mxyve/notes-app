@@ -55,6 +55,7 @@ const MyCommentNotes = ({ children }) => {
       setLoading(true);
       setError(null);
       const response = await getMyComments(user.id);
+      console.log('response', response.data);
       setComments(response.data || []);
     } catch (err) {
       console.error('Failed to fetch comments:', err);
@@ -105,7 +106,7 @@ const MyCommentNotes = ({ children }) => {
                       size="small"
                       icon={<MessageOutlined />}
                       onClick={() =>
-                        (window.location.href = `/community/note/${comment.note_id}`)
+                        (window.location.href = `/notes/${comment.note_id}`)
                       }
                     >
                       查看原文
@@ -113,7 +114,7 @@ const MyCommentNotes = ({ children }) => {
                   }
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <Tag color="blue">笔记ID: {comment.note_id}</Tag>
+                    <span style={{ color: 'blue' }}>{comment.title}</span>
                     <TimeDisplay time={comment.time} />
                   </div>
                   <Paragraph className="mb-3 text-base">

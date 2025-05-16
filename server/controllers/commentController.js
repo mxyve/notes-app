@@ -1,51 +1,5 @@
 import pool from "../config/db.js";
 
-// // 获取评论列表 和 获取回复分开来写的
-// export const getComments = async (req, res) => {
-//   try {
-//     const { noteId } = req.params;
-//     const { userId, page = 1, pageSize = 10 } = req.query; // 从查询参数获取当前用户 ID
-
-//     // 计算 OFFSET
-//     const offset = (page - 1) * pageSize;
-//     // 查询评论，并关联 user_comment_likes 表判断是否点赞，如果点赞is_like字段为1；否则，is_like字段为0
-//     const [rows] = await pool.query(
-//       `SELECT
-//         c.*,
-//         COALESCE(ucl.is_liked, 0) AS is_liked,
-//         u.username, u.nickname, u.avatar_url
-//       FROM comments c
-//       LEFT JOIN user_comment_likes ucl
-//         ON c.id = ucl.comment_id AND ucl.user_id = ?
-//       LEFT JOIN users u
-//         ON u.id = c.user_id
-//       WHERE c.note_id = ? AND c.reply_id = 0
-//       ORDER BY c.time DESC
-//        LIMIT ? OFFSET ?
-//     `,
-//       [userId, noteId, Number(pageSize), Number(offset)]
-//     );
-
-//     // 查询总评论数（用于前端分页计算）
-//     const [totalCount] = await pool.query(
-//       `SELECT COUNT(*) AS total FROM comments
-//        WHERE note_id = ? AND reply_id = 0`,
-//       [noteId]
-//     );
-
-//     res.status(200).json({
-//       data: rows,
-//       pagination: {
-//         page: Number(page),
-//         pageSize: Number(pageSize),
-//         total: totalCount[0].total, // 总评论数
-//       },
-//     });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-
 // 获取评论列表（包括一级评论和回复）
 // 获取评论列表（包括所有层级的评论和回复）
 export const getComments = async (req, res) => {
@@ -237,29 +191,3 @@ export const updateCommentLike = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-// // 获取回复的评论
-// export const getReply = async (req, res) => {
-//   try {
-//     const { noteId, id } = req.params;
-//     const { userId } = req.query;
-//     const [rows] = await pool.query(
-//       `SELECT
-//         c.*,
-//         COALESCE(ucl.is_liked, 0) AS is_liked,
-//         u.username, u.nickname, u.avatar_url
-//       FROM comments c
-//       LEFT JOIN user_comment_likes ucl
-//         ON c.id = ucl.comment_id AND ucl.user_id = ?
-//       LEFT JOIN users u
-//         ON u.id = c.user_id
-//       WHERE c.note_id = ? AND c.reply_id = ?
-//       ORDER BY c.time DESC
-//     `,
-//       [userId, noteId, id]
-//     );
-//     res.status(200).json(rows);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };

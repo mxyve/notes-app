@@ -139,7 +139,9 @@ const RecycleBin = () => {
                   >
                     删除日期: {dayjs(note.deleted_at).format('YYYY-MM-DD')}
                   </Text>
-                  <Text style={{ marginBottom: 12 }}>{note.content}</Text>
+                  <Text className="line-clamp-3" style={{ marginBottom: 12 }}>
+                    {note.content}
+                  </Text>
                   <div style={{ marginBottom: 12 }}>
                     {note.tags.map((tag, index) => (
                       <Tag key={index}>{tag}</Tag>

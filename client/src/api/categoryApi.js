@@ -1,8 +1,8 @@
 import axiosInstance from './axiosInstance';
 
 // 新建分类
-export const createCategory = async (categoryData) => {
-  return axiosInstance.post('/categories', categoryData);
+export const createCategory = async (userId, categoryData) => {
+  return axiosInstance.post(`/categories/${userId}`, categoryData);
 };
 
 // 获取所有分类

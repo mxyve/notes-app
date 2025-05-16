@@ -44,8 +44,9 @@ const CreateNote = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [categoriesResponse] = await Promise.all([getCategories()]);
-        setCategories(categoriesResponse.data);
+        const response = await getCategories(user.id);
+        // const [categoriesResponse] = await Promise.all([getCategories()]);
+        setCategories(response.data);
       } catch (error) {
         console.error('Failed to fetch data:', error);
         message.error('获取数据失败');
@@ -89,14 +90,6 @@ const CreateNote = () => {
     setTags(newTags);
   };
 
-  const cleanMarkdownContent = (content) => {
-    return content.replace(/<[^>]+>/g, (match) => {
-      return match.replace(/(\w+)="true"/g, (attr) => {
-        return attr.replace('="true"', '');
-      });
-    });
-  };
-
   const handleImportMarkdown = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -133,46 +126,6 @@ const CreateNote = () => {
     // 重置input值，以便可以重复选择同一个文件
     event.target.value = '';
   };
-
-  // 上传图片
-  // 添加在组件内部
-  // const onUploadImg = async (files) => {
-  //   try {
-  //     const response = await uploadImg(files[0], user.token);
-  //     return response.url;
-  //   } catch (error) {
-  //     console.error('图片上传失败:', error);
-  //     message.error('图片上传失败');
-  //     return '';
-  //   }
-  // };
-  // 图片上传处理函数
-  // const imageHandler = async () => {
-  //   const input = document.createElement('input');
-  //   input.setAttribute('type', 'file');
-  //   input.setAttribute('accept', 'image/*');
-  //   input.click();
-
-  //   input.onchange = async () => {
-  //     const file = input.files[0];
-  //     if (file) {
-  //       try {
-  //         const formData = new FormData();
-  //         formData.append('image', file);
-
-  //         const response = await uploadImage(formData);
-  //         const imageUrl = response.data.url;
-
-  //         const quill = quillRef.current.getEditor();
-  //         const range = quill.getSelection();
-  //         quill.insertEmbed(range.index, 'image', imageUrl);
-  //         quill.setSelection(range.index + 1);
-  //       } catch (error) {
-  //         console.error('图片上传失败:', error);
-  //       }
-  //     }
-  //   };
-  // };
 
   const onUploadImg = async (files) => {
     try {
@@ -279,10 +232,10 @@ const CreateNote = () => {
             </div>
             <div>
               <MdEditor
+                value={content}
                 onChange={(newContent) => setContent(newContent)}
                 preview="edit" // 设置预览模式
                 showToolbarName // 在工具栏下面显示对应的文字名称
-                // ref={quillRef}
                 onUploadImg={onUploadImg}
               />
               <NoteWordCount content={content} onCountChange={setWordCount} />

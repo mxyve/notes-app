@@ -12,8 +12,6 @@ import {
   getTags,
   updateNoteLike,
   updateNoteCollection,
-  // upload,
-  // uploadImg,
   uploadImage,
 } from "../controllers/noteController.js";
 

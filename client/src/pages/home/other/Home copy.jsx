@@ -49,7 +49,6 @@ const Home = ({ children }) => {
   const [userfollowersData, setUserfollowersData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('friends'); // 'friends'或'followers'
 
   // 获取好友列表数据
   useEffect(() => {
@@ -180,58 +179,12 @@ const Home = ({ children }) => {
           <Col xs={24} md={12}>
             <Card
               title={
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <TeamOutlined style={{ marginRight: 8 }} />
-                  <div
-                    style={{
-                      display: 'flex',
-                      border: '1px solid #d9d9d9',
-                      borderRadius: 4,
-                      overflow: 'hidden',
-                    }}
-                  >
-                    <div
-                      style={{
-                        padding: '4px 12px',
-                        cursor: 'pointer',
-                        backgroundColor:
-                          activeTab === 'friends' ? '#1890ff' : 'transparent',
-                        color: activeTab === 'friends' ? '#fff' : 'inherit',
-                      }}
-                      onClick={() => setActiveTab('friends')}
-                    >
-                      我的好友
-                      <Text
-                        type={
-                          activeTab === 'friends' ? 'secondary' : 'secondary'
-                        }
-                        style={{ marginLeft: 8 }}
-                      >
-                        {followsData.length}人
-                      </Text>
-                    </div>
-                    <div
-                      style={{
-                        padding: '4px 12px',
-                        cursor: 'pointer',
-                        backgroundColor:
-                          activeTab === 'followers' ? '#1890ff' : 'transparent',
-                        color: activeTab === 'followers' ? '#fff' : 'inherit',
-                      }}
-                      onClick={() => setActiveTab('followers')}
-                    >
-                      我的粉丝
-                      <Text
-                        type={
-                          activeTab === 'followers' ? 'secondary' : 'secondary'
-                        }
-                        style={{ marginLeft: 8 }}
-                      >
-                        {userfollowersData.length}人
-                      </Text>
-                    </div>
-                  </div>
-                </div>
+                <span>
+                  <TeamOutlined /> 我的好友
+                  <Text type="secondary" style={{ marginLeft: 8 }}>
+                    {followsData.length}人
+                  </Text>
+                </span>
               }
               className="list-card"
               loading={loading}
@@ -241,9 +194,7 @@ const Home = ({ children }) => {
               ) : (
                 <List
                   grid={{ gutter: 16, xs: 2, sm: 3, md: 3, lg: 4, xl: 4 }}
-                  dataSource={
-                    activeTab === 'friends' ? followsData : userfollowersData
-                  }
+                  dataSource={followsData}
                   renderItem={(user) => (
                     <List.Item>
                       <a
@@ -264,17 +215,57 @@ const Home = ({ children }) => {
                     </List.Item>
                   )}
                   locale={{
-                    emptyText:
-                      activeTab === 'friends'
-                        ? '暂无好友，快去关注一些用户吧！'
-                        : '暂无粉丝，快去发布优质内容吸引关注吧！',
+                    emptyText: '暂无好友，快去关注一些用户吧！',
+                  }}
+                />
+              )}
+            </Card>
+            <Card
+              title={
+                <span>
+                  <TeamOutlined /> 我的粉丝
+                  <Text type="secondary" style={{ marginLeft: 8 }}>
+                    {userfollowersData.length}人
+                  </Text>
+                </span>
+              }
+              className="list-card"
+              loading={loading}
+            >
+              {error ? (
+                <div className="error-message">{error}</div>
+              ) : (
+                <List
+                  grid={{ gutter: 16, xs: 2, sm: 3, md: 3, lg: 4, xl: 4 }}
+                  dataSource={userfollowersData}
+                  renderItem={(user) => (
+                    <List.Item>
+                      <a
+                        href={`/community/PersonalPage/${user.id}`}
+                        className="friend-item"
+                        title={user.signature || '暂无个性签名'}
+                      >
+                        <Avatar
+                          src={user.avatar_url}
+                          size="large"
+                          icon={<UserOutlined />}
+                          className="friend-avatar"
+                        />
+                        <Text className="friend-name" ellipsis>
+                          {user.nickname || user.username}
+                        </Text>
+                      </a>
+                    </List.Item>
+                  )}
+                  locale={{
+                    emptyText: '暂无好友，快去关注一些用户吧！',
                   }}
                 />
               )}
             </Card>
           </Col>
         </Row>
-        {/* {children} */}
+        {children}
       </Content>
       <GlobalModals />
     </Layout>

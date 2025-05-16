@@ -7,7 +7,6 @@ import {
   createTodoList,
   deleteTodoList,
   getTags,
-  deleteTag,
   createTag,
 } from '@/api/todoListApi';
 import RichTextEditor from '@/components/RichTextEditor';
@@ -242,7 +241,7 @@ const TodoListManage = ({
       <Drawer
         title={title || '新建待办事项'}
         placement="right"
-        size={size}
+        size="large"
         onClose={onClose}
         open={open}
         extra={

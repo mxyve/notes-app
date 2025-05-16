@@ -30,7 +30,9 @@ app.use(
     credentials: true,
   })
 );
-
+app.get("/api/test", (req, res) => {
+  res.json({ message: "测试成功" });
+});
 app.use(express.json());
 
 app.use("/api/users", userRoutes);
@@ -43,8 +45,9 @@ app.use("/api/comment", commentRoutes);
 app.use("/api/community", communityRoutes);
 app.use("/api/home", homeRoutes);
 
-app.listen(5173, () => {
-  console.log("Server is running on port 5173");
-});
+// // 后端端口
+// app.listen(3011, () => {
+//   console.log("Server is running on port 3011");
+// });
 
 export default app;

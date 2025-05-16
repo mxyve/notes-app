@@ -1,3 +1,4 @@
+// 没有平铺列表的形式展示
 import React, { useState, useEffect } from 'react';
 import { List, Card, Tag, Layout, Button, Space, Modal, message } from 'antd';
 import { getNotesByCategory, updateNote } from '@/api/noteApi';

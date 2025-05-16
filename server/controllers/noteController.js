@@ -203,7 +203,7 @@ export const deleteNote = async (req, res) => {
   }
 };
 
-// 模糊查询笔记
+// 搜索-模糊查询笔记
 export const searchNotes = async (req, res) => {
   try {
     // 从路径参数获取 userId
@@ -215,25 +215,20 @@ export const searchNotes = async (req, res) => {
       return res.status(400).json({ error: "userId and keyword are required" });
     }
     let sql =
-      "SELECT * FROM notes WHERE user_id = ? AND (title LIKE ? OR content LIKE ?)";
+      "SELECT * FROM notes WHERE user_id = ? AND (title LIKE ? OR content LIKE ?) AND is_delete = 0";
     let values = [userId, `%${keyword}%`, `%${keyword}%`];
 
     if (tags) {
-      // 例如 React,JavaScript,Node.js, 这行代码会将这种字符串形式的 tags 转换为数组 ["React", "JavaScript", "Node.js"]
       const tagArray = Array.isArray(tags) ? tags : tags.split(",");
       console.log("tagArray:", tagArray);
       const placeholders = tagArray
         .map(() => "JSON_CONTAINS(tags, JSON_ARRAY(?))")
-        .join(" AND "); // 前后要加空格 否则JSON_CONTAINS(tags, JSON_ARRAY('React'))ANDJSON_CONTAINS(tags, JSON_ARRAY('markdown'))
-      sql += `AND (${placeholders})`;
+        .join(" AND ");
+      sql += ` AND (${placeholders})`;
       tagArray.forEach((tag) => values.push(tag));
     }
     const [rows] = await pool.query(sql, values);
     res.status(200).json(rows);
-    // // 查标题和内容
-    // const [rows] = await pool.query(
-    //   "SELECT * FROM notes WHERE user_id = ? AND (title LIKE ? OR content LIKE ?)",
-    //   [userId, `%${keyword}%`, `%${keyword}%`]
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

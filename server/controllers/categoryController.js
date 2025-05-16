@@ -5,41 +5,31 @@ export const createCategory = async (req, res) => {
   try {
     // 从请求体中提取name字段
     const { name } = req.body;
+    const { userId } = req.params;
+    const { isDelete } = req.query;
     const [result] = await pool.query(
-      "INSERT INTO categories (name) VALUES (?)",
-      [name]
+      "INSERT INTO categories (user_id,name,is_delete) VALUES (?,?,?)",
+      [userId, name, 0]
     );
-    res.status(201).json({ id: result.insertId, name });
+    res.status(201).json({ id: result.insertId, userId, name });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// // 获取分类列表
-// export const getCategories = async (req, res) => {
-//   try {
-//     const [rows] = await pool.query("SELECT * FROM categories");
-//     res.status(200).json(rows);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-
+// 获取用户分类
 export const getCategories = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
     const { isDelete } = req.query;
 
     const [rows] = await pool.query(
-      `SELECT * 
-      FROM categories c
-      LEFT JOIN user_category uc 
-        on c.id = uc.category_id 
-      WHERE uc.user_id = ? AND uc.is_delete = ?
+      `SELECT *
+      FROM categories 
+      WHERE categories.user_id = ? AND categories.is_delete = ?
       `,
-      [id, isDelete]
+      [userId, 0]
     );
-
     res.status(200).json(rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -51,9 +41,10 @@ export const getCategory = async (req, res) => {
   try {
     // 从请求参数中提取id字段
     const { id } = req.params;
-    const [rows] = await pool.query("SELECT * FROM categories WHERE id = ?", [
-      id,
-    ]);
+    const [rows] = await pool.query(
+      "SELECT * FROM categories WHERE id = ? AND is_delete = 0",
+      [id]
+    );
     if (rows.length > 0) {
       res.status(200).json(rows[0]);
     } else {

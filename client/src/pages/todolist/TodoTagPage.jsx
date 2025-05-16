@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Layout,
-  Badge,
-  Calendar,
   Input,
   message,
   Tag,
@@ -17,10 +15,7 @@ import {
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import Navbar from '@/components/Navbar';
 import {
-  getTodoList,
-  updateTodoList,
   createTodoList,
-  deleteTodoList,
   getTags,
   deleteTag,
   createTag,
@@ -28,7 +23,7 @@ import {
   updateTag,
 } from '@/api/todoListApi';
 import { useStore } from '@/store/userStore';
-import TodoListManager from '@/components/TodoListManage';
+import TodoListManager from './components/TodoListManage';
 import './Todolist.css';
 import GlobalModals from '@/components/GlobalModals';
 
@@ -51,6 +46,28 @@ const TodoList = ({ children }) => {
     fetchTodoListData();
     fetchTodoListTag();
   }, [user]);
+
+  // 处理HTML内容，限制图片尺寸
+  const processContent = (content) => {
+    if (!content) return '无描述';
+
+    // 创建一个临时元素来解析HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = content;
+
+    // 查找所有图片元素并设置固定尺寸
+    const images = tempDiv.querySelectorAll('img');
+    images.forEach((img) => {
+      // 设置固定宽度和高度
+      img.style.maxWidth = '100%'; // 确保图片不超出容器
+      img.style.height = '150px'; // 固定高度
+      img.style.objectFit = 'cover'; // 保持图片比例，裁剪超出部分
+      img.style.borderRadius = '4px'; // 圆角
+    });
+
+    // 返回处理后的HTML字符串
+    return tempDiv.innerHTML;
+  };
 
   // 创建待办项
   const handleCreateTodo = async () => {
@@ -202,7 +219,12 @@ const TodoList = ({ children }) => {
   const handleOpenTagManageModal = () => {
     setIsTagManageModalVisible(true);
     setEditingTag(null);
-    tagForm.resetFields(); // 重置表单
+    // tagForm.resetFields(); // 重置表单
+    // 当执行 tagForm.resetFields() 时，如果对应的 <Form> 组件（编辑标签的表单）尚未挂载到 DOM（例如：打开标签管理模态框但未进入编辑模式时），tagForm 实例会处于 “未连接” 状态，此时调用其方法会触发错误。
+    if (editingTag) {
+      // 改：仅在编辑模式下重置（或根据实际逻辑调整）
+      tagForm.resetFields();
+    }
   };
 
   // 标签表格列配置
@@ -369,9 +391,19 @@ const TodoList = ({ children }) => {
                   </Tag>
                 )}
               </div>
-              <p className="text-sm text-gray-600 mb-2">
-                {todo.content || '无描述'}
-              </p>
+              <p
+                className="text-sm text-gray-600 mb-2"
+                // 解析HTML内容：使用 dangerouslySetInnerHTML 来解析HTML内容。
+                style={{
+                  overflow: 'hidden',
+                  display: '-webkit-box',
+                  WebkitBoxOrient: 'vertical',
+                  WebkitLineClamp: 3, // 限制最多显示三行
+                }}
+                dangerouslySetInnerHTML={{
+                  __html: processContent(todo.content),
+                }}
+              ></p>
               <div className="flex justify-between items-center text-xs text-gray-500">
                 <span>{new Date(todo.time).toLocaleDateString()}</span>
                 <button
@@ -419,10 +451,10 @@ const TodoList = ({ children }) => {
           title={editingTag ? '编辑标签' : '标签管理'}
           open={isTagManageModalVisible}
           onOk={
-            () => tagForm.submit()
-            // editingTag
-            //   ? handleUpdateTag
-            //   : () => setIsTagManageModalVisible(false)
+            // 点了关闭不更新，直接关闭
+            editingTag
+              ? () => tagForm.submit()
+              : () => setIsTagManageModalVisible(false)
           }
           onCancel={() => {
             setIsTagManageModalVisible(false);
